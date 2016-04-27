@@ -126,6 +126,9 @@ function stoken_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  * Einfügen von Extra-Tokens
  */
 function stoken_civicrm_tokens(&$tokens) {
+  // Employer-if-primary-is-work
+  $tokens['address'] = array('address.employer_if' => 'Employer if work-address');
+
   // Datumstokens hinzufügen (siehe https://projekte.systopia.de/redmine/issues/2218)
   $tokens['datum'] = array(
     'datum.kurz' => 'aktuelles Datum (kurz)',
@@ -137,6 +140,15 @@ function stoken_civicrm_tokens(&$tokens) {
  * Einfügen von Extra-Tokens
  */
 function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+  // Employer-if-primary-is-work
+  if (!empty($tokens['address'])) {
+    foreach ($cids as $cid) {
+      if (!empty($values[$cid]['current_employer']) && $values[$cid]['location_type'] == 'Work') {
+        $values[$cid]['address.employer_if'] = $values[$cid]['current_employer'];
+      }
+    }
+  }
+
   // Werte für Datumstokens hinzufügen (siehe https://projekte.systopia.de/redmine/issues/2218)
   if (!empty($tokens['datum'])) {
     $oldlocale = setlocale(LC_ALL, 0);
