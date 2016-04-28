@@ -143,7 +143,7 @@ function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   // Employer-if-primary-is-work
   if (!empty($tokens['address'])) {
     foreach ($cids as $cid) {
-      if (!empty($values[$cid]['current_employer']) && $values[$cid]['location_type'] == 'Work') {
+        if (!empty($values[$cid]['current_employer']) && preg_match('/(work|dienstlich)/i', $values[$cid]['location_type'])) {
         $values[$cid]['address.employer_if'] = $values[$cid]['current_employer'];
       }
     }
