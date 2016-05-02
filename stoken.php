@@ -141,7 +141,7 @@ function stoken_civicrm_tokens(&$tokens) {
  */
 function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
   // Employer-if-primary-is-work
-  if (!empty($tokens['address'] && in_array('employer_if', $tokens['address']))) {
+  if (!empty($tokens['address']) && in_array('employer_if', $tokens['address'])) {
     foreach ($cids as $cid) {
       // get contacts current_employer
       $contact_result = civicrm_api3('Contact', 'get', array(
