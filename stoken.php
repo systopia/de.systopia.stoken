@@ -131,8 +131,9 @@ function stoken_civicrm_tokens(&$tokens) {
 
   // Datumstokens hinzufügen (siehe https://projekte.systopia.de/redmine/issues/2218)
   $tokens['datum'] = array(
-    'datum.kurz' => 'aktuelles Datum (kurz)',
-    'datum.lang' => 'aktuelles Datum (lang)',
+    'datum.kurz' => 'Datum (de) - 03.04.2017',
+    'datum.lang' => 'Datum (de) - Montag, der 03. Januar 2017',
+    'datum.en_US' => 'Datum (us) - March  4, 2017',
   );
 }
 
@@ -178,11 +179,19 @@ function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   // Werte für Datumstokens hinzufügen (siehe https://projekte.systopia.de/redmine/issues/2218)
   if (!empty($tokens['datum'])) {
     $oldlocale = setlocale(LC_ALL, 0);
+
+    // deutsches Format für datum.lang
     setlocale(LC_ALL, 'de_DE');
     $datum = array(
-      'datum.kurz' => strftime("%d.%m.%Y"),
-      'datum.lang' => strftime("%A, der %d. %B %Y"),
+      'datum.kurz' => strftime("%d.%m.%Y"),             // 03.04.2017
+      'datum.lang' => strftime("%A, der %d. %B %Y"),    // Montag, der 03. Januar 2017
     );
+
+    // deutsches Format für datum.lang
+    setlocale(LC_ALL, 'en_US');
+    $datum['datum.en_US'] = strftime("%B %e, %Y");         // March  3, 2017
+
+    // locale zurücksetzen
     setlocale(LC_ALL, $oldlocale);
     foreach ($cids as $cid) {
       $values[$cid] = empty($values[$cid]) ? $datum : $values[$cid] + $datum;
