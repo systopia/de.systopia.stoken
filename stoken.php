@@ -2,7 +2,8 @@
 /*-------------------------------------------------------+
 | SYSTOPIA Additional Tokens                             |
 | Copyright (C) 2016-2018 SYSTOPIA                       |
-| Author: T. Leichtfuß (leichtfuss -at- systopia.de)     |
+| Author: B. Endres (endres -at- systopia.de)            |
+|         T. Leichtfuß (leichtfuss -at- systopia.de)     |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -17,82 +18,22 @@
 require_once 'stoken.civix.php';
 
 /**
- * Register extra tokens
+ * Hook implementation: New Tokens
  */
-function stoken_civicrm_tokens(&$tokens) {
-  // Employer-if-primary-is-work
-  $tokens['address']['address.employer_if'] = 'Employer if work-address';
-
-  // Datumstokens hinzufügen (siehe https://projekte.systopia.de/redmine/issues/2218)
-  $tokens['datum'] = array(
-    'datum.kurz'  => 'Datum (de) - 03.04.2017',
-    'datum.lang'  => 'Datum (de) - Montag, der 03. Januar 2017',
-    'datum.en_US' => 'Datum (us) - March  4, 2017',
-  );
+function stoken_civicrm_tokens( &$tokens ) {
+  CRM_Stoken_AddressTokens::addTokens($tokens);
+  CRM_Stoken_DateTokens::addTokens($tokens);
+  // CRM_Stoken_EmployerIfTokens::addTokens($tokens);
 }
 
 /**
- * Evaluate extra tokens
+ * Hook implementation: New Tokens
  */
 function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-  // Employer-if-primary-is-work
-  if (!empty($tokens['address']) && in_array('employer_if', $tokens['address'])) {
-    foreach ($cids as $cid) {
-      // get contacts current_employer
-      $contact_result = civicrm_api3('Contact', 'get', array(
-        'sequential' => 1,
-        'return' => "current_employer",
-        'id' => $cid,
-      ));
-      if (empty($contact_result['values'][0]['current_employer'])) continue;
-      // get location_type_id of primary address
-      $address_result = civicrm_api3('Address', 'get', array(
-        'sequential' => 1,
-        'return' => "location_type_id",
-        'contact_id' => $cid,
-        'is_primary' => 1,
-      ));
-      if (!isset($address_result['values'][0]['location_type_id'])) continue;
-
-      // get location_type_name
-      $location_type_result = civicrm_api3('LocationType', 'get', array(
-        'sequential' => 1,
-        'return' => "name",
-        'id' => $address_result['values'][0]['location_type_id'],
-      ));
-      if (!isset($location_type_result['values'][0]['name'])) continue;
-
-      $current_employer = $contact_result['values'][0]['current_employer'];
-      $location_type = $location_type_result['values'][0]['name'];
-      if (preg_match('/(work|dienstlich)/i', $location_type)) {
-        $values[$cid]['address.employer_if'] = $current_employer;
-      }
-    }
-  }
-
-  // Werte für Datumstokens hinzufügen (siehe https://projekte.systopia.de/redmine/issues/2218)
-  if (!empty($tokens['datum'])) {
-    $oldlocale = setlocale(LC_ALL, 0);
-
-    // deutsches Format für datum.lang
-    setlocale(LC_ALL, 'de_DE');
-    $datum = array(
-      'datum.kurz' => strftime("%d.%m.%Y"),             // 03.04.2017
-      'datum.lang' => strftime("%A, der %d. %B %Y"),    // Montag, der 03. Januar 2017
-    );
-
-    // deutsches Format für datum.lang
-    setlocale(LC_ALL, 'en_US');
-    $datum['datum.en_US'] = strftime("%B %e, %Y");         // March  3, 2017
-
-    // locale zurücksetzen
-    setlocale(LC_ALL, $oldlocale);
-    foreach ($cids as $cid) {
-      $values[$cid] = empty($values[$cid]) ? $datum : $values[$cid] + $datum;
-    }
-  }
+  CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
+  CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
+  // CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);
 }
-
 
 /**
  * Implements hook_civicrm_config().
