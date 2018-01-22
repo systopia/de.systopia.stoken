@@ -45,24 +45,22 @@ class CRM_Stoken_DateTokens {
   public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
     if (!empty($tokens['date'])) {
       $oldlocale = setlocale(LC_ALL, 0);
+      $dates = array();
 
       // add German dates
       setlocale(LC_ALL, 'de_DE');
-      $date = array(
-        'date.kurz' => strftime("%d.%m.%Y"),
-        'date.lang' => strftime("%A, der %d. %B %Y"),
-      );
+      $dates['date.kurz'] = strftime("%d.%m.%Y");
+      $dates['date.lang'] = strftime("%A, der %d. %B %Y");
 
       // add English dates
       setlocale(LC_ALL, 'en_US');
-      $date = array(
-        'date.short' => strftime("%m/%d/%Y"),
-        'date.long'  => strftime("%B %e, %Y"),
-      );
+      $dates['date.short'] = strftime("%m/%d/%Y");
+      $dates['date.long']  = strftime("%B %e, %Y");
 
+      // restore locale and set data
       setlocale(LC_ALL, $oldlocale);
       foreach ($cids as $cid) {
-        $values[$cid] = empty($values[$cid]) ? $date : $values[$cid] + $date;
+        $values[$cid] = empty($values[$cid]) ? $dates : $values[$cid] + $dates;
       }
     }
   }
