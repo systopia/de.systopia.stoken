@@ -40,7 +40,7 @@ class CRM_Stoken_AddressTokens {
       $new_tokens["{$section_name}.{$location_type_id}_supplemental_address_1"] = E::ts("Supplemental Address 1");
       $new_tokens["{$section_name}.{$location_type_id}_supplemental_address_2"] = E::ts("Supplemental Address 2");
       $new_tokens["{$section_name}.{$location_type_id}_postal_code"]            = E::ts("Postal Code");
-      $new_tokens["{$section_name}.{$location_type_id}_city"]                   = E::ts("City`");
+      $new_tokens["{$section_name}.{$location_type_id}_city"]                   = E::ts("City");
       $new_tokens["{$section_name}.{$location_type_id}_country"]                = E::ts("Country");
 
       // extra tokens

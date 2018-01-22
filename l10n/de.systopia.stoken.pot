@@ -1,0 +1,55 @@
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "Master Name"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "International Country"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "Street Name"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "Supplemental Address 1"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "Supplemental Address 2"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "Postal Code"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php
+msgid "City`"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php CRM/Stoken/AddressTokens.php
+msgid "Country"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php CRM/Stoken/DateTokens.php
+msgid "Current Date German (short)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php CRM/Stoken/DateTokens.php
+msgid "Current Date German (long)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php CRM/Stoken/DateTokens.php
+msgid "Current Date English (short)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php CRM/Stoken/DateTokens.php
+msgid "Current Date English (long)"
+msgstr ""
+
+#: CRM/Stoken/EmployerIfTokens.php CRM/Stoken/EmployerIfTokens.php
+msgid "Employer if work-address"
+msgstr ""
+
+#: CRM/Stoken/AddressTokens.php
+msgid "City"
+msgstr ""
