@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
-<extension key="de.systopia.tokens" type="module">
+<extension key="de.systopia.stoken" type="module">
   <file>stoken</file>
   <name>Additional Smarty-Tokens</name>
   <description>Adds additional smarty-tokens (currently some date-tokens)</description>
   <maintainer>
-    <author>Thomas Leichtfuss</author>
+    <author>SYSTOPIA</author>
     <email>leichtfuss@systopia.de</email>
   </maintainer>
-  <releaseDate>2016-04-28</releaseDate>
-  <version>0.2-beta</version>
-  <develStage>beta</develStage>
+  <releaseDate>2017-06-11</releaseDate>
+  <version>0.2</version>
+  <develStage>stable</develStage>
   <compatibility>
     <ver>4.4</ver>
     <ver>4.5</ver>
