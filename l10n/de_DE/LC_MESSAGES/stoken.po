@@ -14,7 +14,7 @@ msgstr ""
 
 #: CRM/Stoken/AddressTokens.php
 msgid "Master Name"
-msgstr "Adress-Master"
+msgstr "Adressinhaber"
 
 #: CRM/Stoken/AddressTokens.php
 msgid "International Country"
@@ -65,7 +65,6 @@ msgid "Employer if work-address"
 msgstr "Angestellt bei (wenn Dienstadresse)"
 
 #: CRM/Stoken/AddressTokens.php
-#, fuzzy
 msgid "City"
 msgstr "Stadt"
 
