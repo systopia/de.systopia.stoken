@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <extension key="de.systopia.stoken" type="module">
   <file>stoken</file>
-  <name>Additional Smarty-Tokens</name>
-  <description>Adds additional tokens</description>
+  <name>Additional Tokens</name>
+  <description>Adds some new handy CiviCRM tokens</description>
   <maintainer>
     <author>SYSTOPIA</author>
-    <email>leichtfuss@systopia.de</email>
+    <email>endres@systopia.de</email>
   </maintainer>
   <urls>
     <url desc="Main Extension Page">https://github.com/systopia/de.systopia.stoken</url>
