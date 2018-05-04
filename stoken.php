@@ -24,6 +24,7 @@ function stoken_civicrm_tokens( &$tokens ) {
   CRM_Stoken_AddressTokens::addTokens($tokens);
   CRM_Stoken_DateTokens::addTokens($tokens);
   // CRM_Stoken_EmployerIfTokens::addTokens($tokens);
+  CRM_Stoken_UserTokens::addTokens($tokens);
 }
 
 /**
@@ -33,6 +34,7 @@ function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
   CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
   // CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);
+  CRM_Stoken_UserTokens::tokenValues($values, $cids, $job, $tokens, $context);
 }
 
 /**
