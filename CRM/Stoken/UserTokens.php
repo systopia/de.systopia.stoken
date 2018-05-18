@@ -55,4 +55,4 @@ class CRM_Stoken_UserTokens {
       }
     }
   }
- }
+}
