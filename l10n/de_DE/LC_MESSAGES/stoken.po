@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SYSTPIO Tokens\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2018-05-18 14:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Bjoern Endres <Bjoern.Endres@didonai.com>\n"
 "Language-Team: SYSTOPIA <endres@systopia.de>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: CRM/Stoken/AddressTokens.php
 msgid "Master Name"
@@ -37,7 +37,7 @@ msgid "Postal Code"
 msgstr "PLZ"
 
 #: CRM/Stoken/AddressTokens.php
-msgid "City`"
+msgid "City"
 msgstr "Stadt"
 
 #: CRM/Stoken/AddressTokens.php
@@ -64,7 +64,37 @@ msgstr "aktuelles Datum (englisch, lang)"
 msgid "Employer if work-address"
 msgstr "Angestellt bei (wenn Dienstadresse)"
 
-#: CRM/Stoken/AddressTokens.php
-msgid "City"
-msgstr "Stadt"
+#: CRM/Stoken/EmployerIfTokens.php
+msgid "Employer if work-address (with line break)"
+msgstr "Angestellt bei (wenn Dienstadresse) mit Zeilenumbruch"
 
+#: CRM/Stoken/EmployerIfTokens.php
+msgid "Employer if work-address (with HTML line break)"
+msgstr "Angestellt bei (wenn Dienstadresse) mit HTML Zeilenumbruch"
+
+#: CRM/Stoken/FormattingTokens.php
+msgid "Supplemental Address 1 (with line break)"
+msgstr "Adresszusatz 1 (mit Zeilenumbruch)"
+
+#: CRM/Stoken/FormattingTokens.php
+msgid "Supplemental Address 1 (with HTML line break)"
+msgstr "Adresszusatz 1 (mit HTML Zeilenumbruch)"
+
+#: CRM/Stoken/FormattingTokens.php
+msgid "Supplemental Address 2 (with line break)"
+msgstr "Adresszusatz 2 (mit Zeilenumbruch)"
+
+#: CRM/Stoken/FormattingTokens.php
+msgid "Supplemental Address 2 (with HTML line break)"
+msgstr "Adresszusatz 2 (mit HTML Zeilenumbruch)"
+
+#: CRM/Stoken/UserTokens.php
+msgid "First Name"
+msgstr "Vorname"
+
+#: CRM/Stoken/UserTokens.php
+msgid "Last Name"
+msgstr "Nachname"
+
+#~ msgid "City`"
+#~ msgstr "Stadt"
