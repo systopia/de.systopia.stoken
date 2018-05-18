@@ -30,7 +30,9 @@ class CRM_Stoken_EmployerIfTokens {
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokens
    */
   public static function addTokens(&$tokens) {
-    $tokens['address']['address.employer_if'] = E::ts('Employer if work-address');
+    $tokens['address']['address.employer_if']    = E::ts('Employer if work-address');
+    $tokens['address']['address.employer_if_nl'] = E::ts('Employer if work-address (with line break)');
+    $tokens['address']['address.employer_if_br'] = E::ts('Employer if work-address (with HTML line break)');
   }
 
   /**
@@ -44,7 +46,9 @@ class CRM_Stoken_EmployerIfTokens {
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
   public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-    if (!empty($tokens['address']['address.employer_if'])) {
+    if (   !empty($tokens['address']['address.employer_if'])
+        || !empty($tokens['address']['address.employer_if_nl'])
+        || !empty($tokens['address']['address.employer_if_br'])) {
 
       // TODO: refactor! very slow!
 
@@ -76,7 +80,9 @@ class CRM_Stoken_EmployerIfTokens {
         $current_employer = $contact_result['values'][0]['current_employer'];
         $location_type = $location_type_result['values'][0]['name'];
         if (preg_match('/(work|dienstlich)/i', $location_type)) {
-          $values[$cid]['address.employer_if'] = $current_employer;
+          $values[$cid]['address.employer_if']    = $current_employer;
+          $values[$cid]['address.employer_if_nl'] = $current_employer . "\n";
+          $values[$cid]['address.employer_if_br'] = $current_employer . "<br/>";
         }
       }
     }
