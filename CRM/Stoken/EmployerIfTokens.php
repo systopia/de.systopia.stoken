@@ -46,12 +46,14 @@ class CRM_Stoken_EmployerIfTokens {
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
   public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-    if (   !empty($tokens['address']['address.employer_if'])
-        || !empty($tokens['address']['address.employer_if_nl'])
-        || !empty($tokens['address']['address.employer_if_br'])) {
+    if (isset($tokens['address']) && is_array($tokens['address'])) {
+      $used_tokens = array_intersect($tokens['address'], array('employer_if', 'employer_if_nl', 'employer_if_br'));
+      if (empty($used_tokens)) {
+        // none of our tokens were used
+        return;
+      }
 
-      // TODO: refactor! very slow!
-
+      // TODO: refactor! very slow!!
       foreach ($cids as $cid) {
         // get contacts current_employer
         $contact_result = civicrm_api3('Contact', 'get', array(
@@ -59,6 +61,7 @@ class CRM_Stoken_EmployerIfTokens {
           'return' => "current_employer",
           'id' => $cid,
         ));
+        error_log(json_encode($contact_result));
         if (empty($contact_result['values'][0]['current_employer'])) continue;
         // get location_type_id of primary address
         $address_result = civicrm_api3('Address', 'get', array(
