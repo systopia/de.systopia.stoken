@@ -45,12 +45,10 @@ class CRM_Stoken_UserTokens {
    */
   public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
     $user_contact_id = CRM_Core_Session::getLoggedInContactID();
-    error_log($user_contact_id);
     if ($user_contact_id) {
       $contact = civicrm_api3('Contact', 'getsingle', array(
           'id' => $user_contact_id,
           'return' => 'first_name,last_name'));
-      error_log(json_encode($contact));
       foreach ($cids as $cid) {
         $values[$cid]["User.first_name"] = $contact['first_name'];
         $values[$cid]["User.last_name"] = $contact['last_name'];
