@@ -61,7 +61,6 @@ class CRM_Stoken_EmployerIfTokens {
           'return' => "current_employer",
           'id' => $cid,
         ));
-        error_log(json_encode($contact_result));
         if (empty($contact_result['values'][0]['current_employer'])) continue;
         // get location_type_id of primary address
         $address_result = civicrm_api3('Address', 'get', array(
