@@ -23,6 +23,8 @@ This extension adds some handy tokens that may be useful in common scenarios.
 - Current Date German (long)
 - Current Date English (short)
 - Current Date English (long)
+- Current Date French/France (long)
+- Current Date French/France (short)
 
 ### Employer tokens
 

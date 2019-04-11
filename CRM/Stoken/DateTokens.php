@@ -29,6 +29,8 @@ class CRM_Stoken_DateTokens {
       'date.lang'  => E::ts('Current Date German (long)'),
       'date.short' => E::ts('Current Date English (short)'),
       'date.long'  => E::ts('Current Date English (long)'),
+      'date.fr_FR_longue' => E::ts('Current Date French/France (long)'),
+      'date.fr_FR_courte' => E::ts('Current Date French/France (short)'),
     );
   }
 
@@ -56,6 +58,12 @@ class CRM_Stoken_DateTokens {
       setlocale(LC_ALL, 'en_US');
       $dates['date.short'] = strftime("%m/%d/%Y");
       $dates['date.long']  = strftime("%B %e, %Y");
+
+      // add French dates
+      setlocale(LC_ALL, 'fr_FR');
+      $day_appendix = (trim(strftime("%e")) === "1" ? 'er' : '');
+      $dates['date.fr_FR_longue'] = strftime("le %e$day_appendix %B %Y");
+      $dates['date.fr_FR_courte'] = strftime("%d/%m/%Y");
 
       // restore locale and set data
       setlocale(LC_ALL, $oldlocale);
