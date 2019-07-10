@@ -70,10 +70,10 @@ class CRM_Stoken_DateTokens {
 
       // add Spanish dates
       setlocale(LC_ALL, 'en_ES');
-      $day = (trim(strftime("%e")) === '1' ? ' primero' : '%e');
+      $day = (trim(strftime("%e")) === '1' ? 'primero' : '%e');
       $dates['date.en_ES_corto'] = strftime("%d-%m-%Y");
       $dates['date.en_ES_medio'] = strftime("%d-%b-%Y");
-      $dates['date.en_ES_largo'] = strftime("%A,$day de %B de %Y");
+      $dates['date.en_ES_largo'] = strftime("$day de %B de %Y");
 
       // restore locale and set data
       setlocale(LC_ALL, $oldlocale);
