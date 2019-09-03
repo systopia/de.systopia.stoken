@@ -51,8 +51,9 @@ class CRM_Stoken_FormattingTokens {
 
       // load addresses
       $data = civicrm_api3('Contact', 'get', array(
-        'id'     => array('IN' => $cids),
-        'return' => 'supplemental_address_1,supplemental_address_2,id'));
+          'id'           => ['IN' => $cids],
+          'option.limit' => 0,
+          'return'       => 'supplemental_address_1,supplemental_address_2,id'));
       foreach ($data['values'] as $entry) {
         $cid = $entry['id'];
         if (!empty($entry['supplemental_address_1'])) {
