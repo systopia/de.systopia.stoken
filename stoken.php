@@ -17,6 +17,12 @@
 
 require_once 'stoken.civix.php';
 
+// phpcs:disable
+use Civi\RemoteToolsDispatcher;
+use CRM_Stoken_ExtensionUtil as E;
+// phpcs:enable
+
+
 /**
  * Hook implementation: New Tokens
  */
@@ -45,6 +51,19 @@ function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
 function stoken_civicrm_config(&$config) {
+  // subscribe to 'event messages' events (with our own wrapper to avoid duplicate registrations)
+  if (class_exists('Civi\RemoteToolsDispatcher')) {
+    $dispatcher = new RemoteToolsDispatcher();
+    $dispatcher->addUniqueListener(
+        'civi.eventmessages.tokenlist',
+        ['CRM_Stoken_EventMessagesIntegration', 'listTokens']
+    );
+    $dispatcher->addUniqueListener(
+        'civi.eventmessages.tokens',
+        ['CRM_Stoken_EventMessagesIntegration', 'addTokens']
+    );
+  }
+
   _stoken_civix_civicrm_config($config);
 }
 
