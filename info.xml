@@ -13,7 +13,7 @@
     <url desc="Support">https://github.com/systopia/de.systopia.stoken/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate></releaseDate>
+  <releaseDate/>
   <version>0.8-dev</version>
   <develStage>dev</develStage>
   <compatibility>
@@ -23,5 +23,9 @@
   </compatibility>
   <civix>
     <namespace>CRM/Stoken</namespace>
+    <format>22.12.1</format>
   </civix>
+  <classloader>
+    <psr0 prefix="CRM_" path="."/>
+  </classloader>
 </extension>
