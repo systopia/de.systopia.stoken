@@ -3,6 +3,7 @@
   <file>stoken</file>
   <name>Additional Tokens</name>
   <description>Adds some new handy CiviCRM tokens</description>
+  <license>AGPL-3.0</license>
   <maintainer>
     <author>SYSTOPIA</author>
     <email>endres@systopia.de</email>
