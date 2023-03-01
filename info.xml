@@ -24,9 +24,10 @@
   </compatibility>
   <civix>
     <namespace>CRM/Stoken</namespace>
-    <format>22.12.1</format>
+    <format>23.02.1</format>
   </civix>
   <classloader>
     <psr0 prefix="CRM_" path="."/>
+    <psr4 prefix="Civi\" path="Civi"/>
   </classloader>
 </extension>
