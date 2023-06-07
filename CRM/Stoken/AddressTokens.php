@@ -118,14 +118,14 @@ class CRM_Stoken_AddressTokens {
                   } else {
                     $values[$contact_id]["{$token_class}.{$token}"] = '';
                   }
-                  continue;
+                  break;
 
                 case 'address_master':
                   $values[$contact_id]["{$token_class}.{$token}"] = CRM_Utils_Array::value('master',  $address, '');
-                  continue;
+                  break;
 
                 default:
-                  continue;
+                  break;
               }
             }
           }
