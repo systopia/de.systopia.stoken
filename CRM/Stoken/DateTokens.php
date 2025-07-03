@@ -51,29 +51,54 @@ class CRM_Stoken_DateTokens {
     if (!empty($tokens['date'])) {
       $oldlocale = setlocale(LC_ALL, 0);
       $dates = array();
+      $now = new DateTime();
 
       // add German dates
-      setlocale(LC_ALL, 'de_DE');
-      $dates['date.kurz'] = strftime("%d.%m.%Y");
-      $dates['date.lang'] = strftime("%A, der %d. %B %Y");
+      setlocale(LC_TIME, 'de_DE.utf8');
+      $formatter = new IntlDateFormatter('de_DE', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+      $formatter->setPattern('dd.MM.yyyy');
+      $dates['date.kurz'] = $formatter->format($now);
+
+      $formatter->setPattern("EEEE, 'der' dd. MMMM yyyy");
+      $dates['date.lang'] = $formatter->format($now);
 
       // add English dates
-      setlocale(LC_ALL, 'en_US');
-      $dates['date.short'] = strftime("%m/%d/%Y");
-      $dates['date.long']  = strftime("%B %e, %Y");
+      setlocale(LC_TIME, 'en_US.utf8');
+      $formatter = new IntlDateFormatter('en_US', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+      $formatter->setPattern('MM/dd/yyyy');
+      $dates['date.short'] = $formatter->format($now);
+
+      $formatter->setPattern('MMMM d, yyyy');
+      $dates['date.long']  = $formatter->format($now);
 
       // add French dates
-      setlocale(LC_ALL, 'fr_FR');
-      $day_appendix = (trim(strftime("%e")) === "1" ? 'er' : '');
-      $dates['date.fr_FR_longue'] = strftime("le %e$day_appendix %B %Y");
-      $dates['date.fr_FR_courte'] = strftime("%d/%m/%Y");
+      setlocale(LC_TIME, 'fr_FR.utf8');
+      $day = (int) $now->format('j');
+      $day_appendix = $day === 1 ? 'er' : '';
+      $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+      $formatter->setPattern("'le' d'$day_appendix' MMMM yyyy");
+      $dates['date.fr_FR_longue'] = $formatter->format($now);
+
+      $formatter->setPattern('dd/MM/yyyy');
+      $dates['date.fr_FR_courte'] = $formatter->format($now);
 
       // add Spanish dates
-      setlocale(LC_ALL, 'es_ES');
-      $day = (trim(strftime("%e")) === '1' ? 'primero' : '%e');
-      $dates['date.es_ES_corto'] = strftime("%d-%m-%Y");
-      $dates['date.es_ES_medio'] = strftime("%d-%b-%Y");
-      $dates['date.es_ES_largo'] = strftime("$day de %B de %Y");
+      setlocale(LC_TIME, 'es_ES.utf8');
+      $day = (int) $now->format('j');
+      $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+
+      $formatter->setPattern("d 'de' MMMM 'de' yyyy");
+      $esLargo = $formatter->format($now);
+      if ($day === 1) {
+          $esLargo = preg_replace('/^1/', 'primero', $esLargo);
+      }
+      $dates['date.es_ES_largo'] = $esLargo;
+
+      $formatter->setPattern('dd-MM-yyyy');
+      $dates['date.es_ES_corto'] = $formatter->format($now);
+
+      $formatter->setPattern('dd-MMM-yyyy');
+      $dates['date.es_ES_medio'] = $formatter->format($now);
 
       // restore locale and set data
       setlocale(LC_ALL, $oldlocale);
