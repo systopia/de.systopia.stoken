@@ -52,7 +52,7 @@ class CRM_Stoken_DateTokens {
    */
   public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
     if (isset($tokens['date']) && is_array($tokens['date']) && $tokens['date'] !== []) {
-      $oldlocale = setlocale(LC_ALL, 0);
+      $oldlocale = setlocale(LC_ALL, '0');
       $dates = [];
       $now = new DateTime();
 

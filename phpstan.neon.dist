@@ -43,4 +43,12 @@ parameters:
 	ignoreErrors:
 		# Note paths are prefixed with "*/" to work with inspections in PHPStorm because of:
 		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
+		-
+			message: '#^Call to function method_exists\(\) with Civi\\EventMessages\\MessageTokens and ''requiresToken'' will always evaluate to true\.$#'
+			path: '*/CRM/Stoken/EventMessagesIntegration.php'
+			count: 1
+			# Deliberate version-compatibility check for the optional
+			# de.systopia.eventmessages extension: our PHPStan stub only
+			# reflects its current API shape, so PHPStan can't know that
+			# older versions may lack requiresToken(). See phpstan-stubs/EventMessages.stub.php.
 	tmpDir: .phpstan

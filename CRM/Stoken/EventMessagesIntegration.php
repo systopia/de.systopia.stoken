@@ -119,6 +119,7 @@ class CRM_Stoken_EventMessagesIntegration {
    * @param \Civi\EventMessages\MessageTokens $messageTokens
    *   the token list
    */
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
   public static function addTokens(MessageTokens $messageTokens) {
     // extract contact ID
     $tokens = $messageTokens->getTokens();
@@ -157,6 +158,9 @@ class CRM_Stoken_EventMessagesIntegration {
     // now gather token values
     $values = [];
     $values[$contact_id] = [];
+    foreach ($used_tokens as $used_token) {
+      $values[$contact_id]["{$used_token['group']}.{$used_token['local_name']}"] = NULL;
+    }
     foreach ($required_classes as $generator_class) {
       $generator_class::tokenValues($values, $cids, NULL, $token_list);
     }
