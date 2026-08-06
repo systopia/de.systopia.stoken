@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 /*-------------------------------------------------------+
 | SYSTOPIA Additional Tokens                             |
 | Copyright (C) 2016-2018 SYSTOPIA                       |
@@ -15,6 +16,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 require_once 'stoken.civix.php';
 
 // phpcs:disable
@@ -22,11 +25,10 @@ use Civi\RemoteToolsDispatcher;
 use CRM_Stoken_ExtensionUtil as E;
 // phpcs:enable
 
-
 /**
  * Hook implementation: New Tokens
  */
-function stoken_civicrm_tokens( &$tokens ) {
+function stoken_civicrm_tokens(&$tokens) {
   CRM_Stoken_AddressTokens::addTokens($tokens);
   CRM_Stoken_DateTokens::addTokens($tokens);
   CRM_Stoken_EmployerIfTokens::addTokens($tokens);
@@ -37,7 +39,7 @@ function stoken_civicrm_tokens( &$tokens ) {
 /**
  * Hook implementation: New Tokens
  */
-function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+function stoken_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
   CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);

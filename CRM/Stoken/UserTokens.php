@@ -15,6 +15,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Stoken_ExtensionUtil as E;
 
 class CRM_Stoken_UserTokens {
@@ -28,8 +30,8 @@ class CRM_Stoken_UserTokens {
 
     if ($user_contact_id) {
       // add tokens for logged-in user
-      $tokens["User"]["User.first_name"] = E::ts("First Name");
-      $tokens["User"]["User.last_name"]  = E::ts("Last Name");
+      $tokens['User']['User.first_name'] = E::ts('First Name');
+      $tokens['User']['User.last_name']  = E::ts('Last Name');
     }
   }
 
@@ -38,21 +40,24 @@ class CRM_Stoken_UserTokens {
    * @param $values - array of values, keyed by contact id
    * @param $cids - array of contactIDs that the system needs values for.
    * @param $job - the job_id
-   * @param $tokens - tokens used in the mailing - use this to check whether a token is being used and avoid fetching data for unneeded tokens
+   * @param $tokens - tokens used in the mailing - use this to check whether
+   *   a token is being used and avoid fetching data for unneeded tokens
    * @param $context - the class name
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+  public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
     $user_contact_id = CRM_Core_Session::getLoggedInContactID();
     if ($user_contact_id) {
-      $contact = civicrm_api3('Contact', 'getsingle', array(
-          'id' => $user_contact_id,
-          'return' => 'first_name,last_name'));
+      $contact = civicrm_api3('Contact', 'getsingle', [
+        'id' => $user_contact_id,
+        'return' => 'first_name,last_name',
+      ]);
       foreach ($cids as $cid) {
-        $values[$cid]["User.first_name"] = $contact['first_name'];
-        $values[$cid]["User.last_name"] = $contact['last_name'];
+        $values[$cid]['User.first_name'] = $contact['first_name'];
+        $values[$cid]['User.last_name'] = $contact['last_name'];
       }
     }
   }
+
 }

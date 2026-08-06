@@ -15,6 +15,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Stoken_ExtensionUtil as E;
 
 class CRM_Stoken_FormattingTokens {
@@ -35,13 +37,19 @@ class CRM_Stoken_FormattingTokens {
    * @param $values - array of values, keyed by contact id
    * @param $cids - array of contactIDs that the system needs values for.
    * @param $job - the job_id
-   * @param $tokens - tokens used in the mailing - use this to check whether a token is being used and avoid fetching data for unneeded tokens
+   * @param $tokens - tokens used in the mailing - use this to check whether
+   *   a token is being used and avoid fetching data for unneeded tokens
    * @param $context - the class name
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-    $mytokens = array('supplemental_address_1_nl', 'supplemental_address_1_br', 'supplemental_address_2_nl', 'supplemental_address_2_br');
+  public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
+    $mytokens = [
+      'supplemental_address_1_nl',
+      'supplemental_address_1_br',
+      'supplemental_address_2_nl',
+      'supplemental_address_2_br',
+    ];
     if (isset($tokens['address']) && is_array($tokens['address'])) {
       $my_used_tokens = array_intersect($tokens['address'], $mytokens);
       if (empty($my_used_tokens)) {
@@ -50,21 +58,23 @@ class CRM_Stoken_FormattingTokens {
       }
 
       // load addresses
-      $data = civicrm_api3('Contact', 'get', array(
-          'id'           => ['IN' => $cids],
-          'option.limit' => 0,
-          'return'       => 'supplemental_address_1,supplemental_address_2,id'));
+      $data = civicrm_api3('Contact', 'get', [
+        'id'           => ['IN' => $cids],
+        'option.limit' => 0,
+        'return'       => 'supplemental_address_1,supplemental_address_2,id',
+      ]);
       foreach ($data['values'] as $entry) {
         $cid = $entry['id'];
         if (!empty($entry['supplemental_address_1'])) {
           $values[$cid]['address.supplemental_address_1_nl'] = $entry['supplemental_address_1'] . "\n";
-          $values[$cid]['address.supplemental_address_1_br'] = $entry['supplemental_address_1'] . "<br/>";
+          $values[$cid]['address.supplemental_address_1_br'] = $entry['supplemental_address_1'] . '<br/>';
         }
         if (!empty($entry['supplemental_address_2'])) {
           $values[$cid]['address.supplemental_address_2_nl'] = $entry['supplemental_address_2'] . "\n";
-          $values[$cid]['address.supplemental_address_2_br'] = $entry['supplemental_address_2'] . "<br/>";
+          $values[$cid]['address.supplemental_address_2_br'] = $entry['supplemental_address_2'] . '<br/>';
         }
       }
     }
   }
+
 }

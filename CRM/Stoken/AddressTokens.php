@@ -15,6 +15,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use CRM_Stoken_ExtensionUtil as E;
 
 class CRM_Stoken_AddressTokens {
@@ -25,26 +27,26 @@ class CRM_Stoken_AddressTokens {
    */
   public static function addTokens(&$tokens) {
     // add tokens for primary addresses
-    $tokens["Address"]["Address.address_master"]      = E::ts("Master Name");
+    $tokens['Address']['Address.address_master'] = E::ts('Master Name');
 
     // add special country token (HBS-4944)
-    $tokens["Address"]["Address.address_country_int"] = E::ts("International Country");
+    $tokens['Address']['Address.address_country_int'] = E::ts('International Country');
 
     // add tokens for other location types
     $location_type_map = self::getLocationTypeMap();
-    $new_tokens = array();
+    $new_tokens = [];
     foreach ($location_type_map as $location_type_id => $section_name) {
 
       // address tokens
-      $new_tokens["{$section_name}.{$location_type_id}_street_address"]         = E::ts("Street Name");
-      $new_tokens["{$section_name}.{$location_type_id}_supplemental_address_1"] = E::ts("Supplemental Address 1");
-      $new_tokens["{$section_name}.{$location_type_id}_supplemental_address_2"] = E::ts("Supplemental Address 2");
-      $new_tokens["{$section_name}.{$location_type_id}_postal_code"]            = E::ts("Postal Code");
-      $new_tokens["{$section_name}.{$location_type_id}_city"]                   = E::ts("City");
-      $new_tokens["{$section_name}.{$location_type_id}_country"]                = E::ts("Country");
+      $new_tokens["{$section_name}.{$location_type_id}_street_address"]         = E::ts('Street Name');
+      $new_tokens["{$section_name}.{$location_type_id}_supplemental_address_1"] = E::ts('Supplemental Address 1');
+      $new_tokens["{$section_name}.{$location_type_id}_supplemental_address_2"] = E::ts('Supplemental Address 2');
+      $new_tokens["{$section_name}.{$location_type_id}_postal_code"]            = E::ts('Postal Code');
+      $new_tokens["{$section_name}.{$location_type_id}_city"]                   = E::ts('City');
+      $new_tokens["{$section_name}.{$location_type_id}_country"]                = E::ts('Country');
 
       // extra tokens
-      $new_tokens["{$section_name}.{$location_type_id}_master"]                 = E::ts("Master Name");
+      $new_tokens["{$section_name}.{$location_type_id}_master"] = E::ts('Master Name');
 
       // store results
       $tokens["{$section_name}"] = $new_tokens;
@@ -56,21 +58,26 @@ class CRM_Stoken_AddressTokens {
    * @param $values - array of values, keyed by contact id
    * @param $cids - array of contactIDs that the system needs values for.
    * @param $job - the job_id
-   * @param $tokens - tokens used in the mailing - use this to check whether a token is being used and avoid fetching data for unneeded tokens
+   * @param $tokens - tokens used in the mailing - use this to check whether
+   *   a token is being used and avoid fetching data for unneeded tokens
    * @param $context - the class name
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  public static function tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.NestingLevel.TooHigh
+  public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
     // extract contact_ids
     if (is_string($cids)) {
       $contact_ids = explode(',', $cids);
-    } elseif (isset($cids['contact_id'])) {
-      $contact_ids = array($cids['contact_id']);
-    } elseif (is_array($cids)) {
+    }
+    elseif (isset($cids['contact_id'])) {
+      $contact_ids = [$cids['contact_id']];
+    }
+    elseif (is_array($cids)) {
       $contact_ids = $cids;
-    } else {
-      error_log("Cannot interpret cids: " . json_encode($cids));
+    }
+    else {
+      error_log('Cannot interpret cids: ' . json_encode($cids));
       return;
     }
 
@@ -88,17 +95,17 @@ class CRM_Stoken_AddressTokens {
             foreach ($token_list as $token) {
               $field = substr($token, strlen($location_type_id) + 1);
               $values[$contact_id]["{$token_class}.{$token}"] = $address[$field];
-              // error_log("FIELD {$token_class}.{$token} to $field, value is " . $address[$field]);
             }
-          } else {
+          }
+          else {
             // this guy doesn't have this address
             foreach ($token_list as $token) {
               $values[$contact_id]["{$token_class}.{$token}"] = '';
-              // error_log("FIELD {$token_class}.{$token}n set to empty string");
             }
           }
         }
-      } elseif ($token_class == 'Address') {
+      }
+      elseif ($token_class == 'Address') {
         // add tokens for primary addresses (HBS-4943)
         if (self::includesMasterTokens($token_list) || self::includesIntlToken($token_list)) {
           $addresses = self::loadAddresses($contact_ids, NULL, TRUE);
@@ -114,14 +121,17 @@ class CRM_Stoken_AddressTokens {
                   // add special country token (HBS-4944)
                   if (!empty($address['country_id']) && $address['country_id'] != 1082) {
                     // this is an international (not German) country
-                    $values[$contact_id]["{$token_class}.{$token}"] = CRM_Core_PseudoConstant::country($address['country_id']);
-                  } else {
+                    $values[$contact_id]["{$token_class}.{$token}"] = CRM_Core_PseudoConstant::country(
+                      $address['country_id']
+                    );
+                  }
+                  else {
                     $values[$contact_id]["{$token_class}.{$token}"] = '';
                   }
                   break;
 
                 case 'address_master':
-                  $values[$contact_id]["{$token_class}.{$token}"] = CRM_Utils_Array::value('master',  $address, '');
+                  $values[$contact_id]["{$token_class}.{$token}"] = CRM_Utils_Array::value('master', $address, '');
                   break;
 
                 default:
@@ -153,7 +163,7 @@ class CRM_Stoken_AddressTokens {
    */
   protected static function includesIntlToken($token_list) {
     foreach ($token_list as $token) {
-      if ('address_country_int' == substr($token, (strlen($token)-19))) {
+      if ('address_country_int' == substr($token, (strlen($token) - 19))) {
         return TRUE;
       }
     }
@@ -168,20 +178,23 @@ class CRM_Stoken_AddressTokens {
     // TODO: cache?
 
     // compile query
-    $query_parameters = array(
-      'contact_id'       => array('IN' => $contact_ids),
-      'return'           => 'street_address,supplemental_address_1,supplemental_address_2,postal_code,city,country_id,master_id,contact_id',
-      'options'          => array('limit' => 0));
+    $query_parameters = [
+      'contact_id'       => ['IN' => $contact_ids],
+      'return'           => 'street_address,supplemental_address_1,supplemental_address_2,'
+      . 'postal_code,city,country_id,master_id,contact_id',
+      'options'          => ['limit' => 0],
+    ];
     if ($location_type_id) {
       $query_parameters['location_type_id'] = $location_type_id;
-    } else {
+    }
+    else {
       $query_parameters['is_primary'] = 1;
     }
     $query = civicrm_api3('Address', 'get', $query_parameters);
 
     // index by contact
-    $contactId_2_address = array();
-    $contactId_2_masterAddressId  = array();
+    $contactId_2_address = [];
+    $contactId_2_masterAddressId  = [];
     foreach ($query['values'] as $address) {
       $contactId_2_address[$address['contact_id']] = $address;
       if (!empty($address['master_id'])) {
@@ -193,13 +206,13 @@ class CRM_Stoken_AddressTokens {
     // TODO: speed up with SQL?
     if ($load_master && !empty($contactId_2_masterAddressId)) {
       // step 1: load all master addresses
-      $master_query = civicrm_api3('Address', 'get', array(
-        'id'         => array('IN' => array_values($contactId_2_masterAddressId)),
+      $master_query = civicrm_api3('Address', 'get', [
+        'id'         => ['IN' => array_values($contactId_2_masterAddressId)],
         'return'     => 'id,contact_id',
         'sequential' => 0,
-        'options'    => array('limit' => 0),
-        ));
-      $contactId_2_masterContactId = array();
+        'options'    => ['limit' => 0],
+      ]);
+      $contactId_2_masterContactId = [];
       foreach ($contactId_2_masterAddressId as $contact_id => $master_id) {
         if (isset($master_query['values'][$master_id]['contact_id'])) {
           $contactId_2_masterContactId[$contact_id] = $master_query['values'][$master_id]['contact_id'];
@@ -207,31 +220,31 @@ class CRM_Stoken_AddressTokens {
       }
 
       // step 2: load all master contacts and set values in $contactId_2_address
-      $master_contactquery = civicrm_api3('Contact', 'get', array(
-        'id'         => array('IN' => array_values($contactId_2_masterContactId)),
+      $master_contactquery = civicrm_api3('Contact', 'get', [
+        'id'         => ['IN' => array_values($contactId_2_masterContactId)],
         'sequential' => 0,
-        'return'     => "display_name",
-        'options'    => array('limit' => 0),
-        ));
+        'return'     => 'display_name',
+        'options'    => ['limit' => 0],
+      ]);
       foreach ($contactId_2_masterContactId as $contact_id => $master_contact_id) {
         $master_contact = $master_contactquery['values'][$master_contact_id];
-        $contactId_2_address[$contact_id]['master']   = CRM_Utils_Array::value('display_name',  $master_contact, '');
+        $contactId_2_address[$contact_id]['master']   = CRM_Utils_Array::value('display_name', $master_contact, '');
       }
     }
 
     return $contactId_2_address;
   }
 
-
   /**
    * get a unique map location_type_id => token class name
    */
   public static function getLocationTypeMap() {
-    $location_type_map = array();
-    $location_types = civicrm_api3('LocationType', 'get', array(
+    $location_type_map = [];
+    $location_types = civicrm_api3('LocationType', 'get', [
       'is_active'     => 1,
       'options.limit' => 0,
-      'return'        => 'display_name,name'));
+      'return'        => 'display_name,name',
+    ]);
     foreach ($location_types['values'] as $location_type) {
       $preferred_name = 'Adresse_' . $location_type['display_name'];
       // token class does not allow any special characters (except '_')
@@ -248,4 +261,5 @@ class CRM_Stoken_AddressTokens {
     }
     return $location_type_map;
   }
+
 }
