@@ -124,11 +124,13 @@ class CRM_Stoken_EventMessagesIntegration {
   public static function addTokens(MessageTokens $messageTokens): void {
     // extract contact ID
     $tokens = $messageTokens->getTokens();
-    $contact_id = $tokens['contact']['id'] ?? NULL;
-    if ($contact_id === NULL || (int) $contact_id <= 0) {
+    $contact = is_array($tokens['contact'] ?? NULL) ? $tokens['contact'] : [];
+    $contact_id = $contact['id'] ?? NULL;
+    if (!is_numeric($contact_id) || (int) $contact_id <= 0) {
       // no contact found
       return;
     }
+    $contact_id = (int) $contact_id;
     $cids = [$contact_id];
 
     // find out which tokens we need

@@ -127,7 +127,8 @@ class CRM_Stoken_AddressTokens {
               switch ($token) {
                 case 'address_country_int':
                   // add special country token (HBS-4944)
-                  $country_id = isset($address['country_id']) ? (int) $address['country_id'] : NULL;
+                  $raw_country_id = $address['country_id'] ?? NULL;
+                  $country_id = is_numeric($raw_country_id) ? (int) $raw_country_id : NULL;
                   if ($country_id !== NULL && $country_id !== 1082) {
                     // this is an international (not German) country
                     $values[$contact_id]["{$token_class}.{$token}"] = CRM_Core_PseudoConstant::country(
