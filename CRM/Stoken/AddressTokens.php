@@ -278,10 +278,10 @@ class CRM_Stoken_AddressTokens {
     foreach ($location_types['values'] as $location_type) {
       $preferred_name = 'Adresse_' . $location_type['display_name'];
       // token class does not allow any special characters (except '_')
-      $preferred_name = preg_replace('#ä#', 'ae', $preferred_name);
-      $preferred_name = preg_replace('#ü#', 'ue', $preferred_name);
-      $preferred_name = preg_replace('#ö#', 'oe', $preferred_name);
-      $preferred_name = preg_replace('#[^\w]#', '_', $preferred_name);
+      $preferred_name = preg_replace('#ä#', 'ae', $preferred_name) ?? $preferred_name;
+      $preferred_name = preg_replace('#ü#', 'ue', $preferred_name) ?? $preferred_name;
+      $preferred_name = preg_replace('#ö#', 'oe', $preferred_name) ?? $preferred_name;
+      $preferred_name = preg_replace('#[^\w]#', '_', $preferred_name) ?? $preferred_name;
       $actual_name = $preferred_name;
       while (in_array($actual_name, array_values($location_type_map), TRUE)) {
         // name already exists -> just extend
