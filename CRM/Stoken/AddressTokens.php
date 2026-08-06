@@ -161,7 +161,7 @@ class CRM_Stoken_AddressTokens {
    */
   protected static function includesMasterTokens(array $token_list): bool {
     foreach ($token_list as $token) {
-      if (strstr($token, 'master')) {
+      if (strstr($token, 'master') !== FALSE) {
         return TRUE;
       }
     }
@@ -191,7 +191,7 @@ class CRM_Stoken_AddressTokens {
    *
    * @return array<int|string, array<string, mixed>>
    */
-  // phpcs:ignore Generic.Files.LineLength.TooLong
+  // phpcs:ignore Generic.Files.LineLength.TooLong, Generic.Metrics.CyclomaticComplexity.TooHigh
   protected static function loadAddresses(array $contact_ids, ?int $location_type_id, bool $load_master = FALSE): array {
     // TODO: cache?
 
@@ -209,6 +209,9 @@ class CRM_Stoken_AddressTokens {
       $query_parameters['is_primary'] = 1;
     }
     $query = civicrm_api3('Address', 'get', $query_parameters);
+    if (!is_array($query)) {
+      return [];
+    }
 
     // index by contact
     $contactId_2_address = [];
@@ -245,6 +248,9 @@ class CRM_Stoken_AddressTokens {
         'return'     => 'display_name',
         'options'    => ['limit' => 0],
       ]);
+      if (!is_array($master_contactquery)) {
+        return $contactId_2_address;
+      }
       foreach ($contactId_2_masterContactId as $contact_id => $master_contact_id) {
         $master_contact = $master_contactquery['values'][$master_contact_id];
         $contactId_2_address[$contact_id]['master']   = $master_contact['display_name'] ?? '';
@@ -266,6 +272,9 @@ class CRM_Stoken_AddressTokens {
       'options.limit' => 0,
       'return'        => 'display_name,name',
     ]);
+    if (!is_array($location_types)) {
+      return $location_type_map;
+    }
     foreach ($location_types['values'] as $location_type) {
       $preferred_name = 'Adresse_' . $location_type['display_name'];
       // token class does not allow any special characters (except '_')

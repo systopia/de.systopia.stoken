@@ -101,7 +101,7 @@ class CRM_Stoken_DateTokens {
 
       $formatter->setPattern("d 'de' MMMM 'de' yyyy");
       $esLargo = $formatter->format($now);
-      if ($day === 1) {
+      if ($day === 1 && $esLargo !== FALSE) {
         $esLargo = preg_replace('/^1/', 'primero', $esLargo);
       }
       $dates['date.es_ES_largo'] = $esLargo;
@@ -113,7 +113,9 @@ class CRM_Stoken_DateTokens {
       $dates['date.es_ES_medio'] = $formatter->format($now);
 
       // restore locale and set data
-      setlocale(LC_ALL, $oldlocale);
+      if ($oldlocale !== FALSE) {
+        setlocale(LC_ALL, $oldlocale);
+      }
       foreach ($cids as $cid) {
         $values[$cid] = (!isset($values[$cid]) || $values[$cid] === []) ? $dates : $values[$cid] + $dates;
       }

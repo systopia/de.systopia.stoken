@@ -72,6 +72,9 @@ class CRM_Stoken_FormattingTokens {
         'option.limit' => 0,
         'return'       => 'supplemental_address_1,supplemental_address_2,id',
       ]);
+      if (!is_array($data)) {
+        return;
+      }
       foreach ($data['values'] as $entry) {
         $cid = $entry['id'];
         if (isset($entry['supplemental_address_1']) && $entry['supplemental_address_1'] !== '') {

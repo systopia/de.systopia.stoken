@@ -62,6 +62,9 @@ class CRM_Stoken_UserTokens {
         'id' => $user_contact_id,
         'return' => 'first_name,last_name',
       ]);
+      if (!is_array($contact)) {
+        return;
+      }
       foreach ($cids as $cid) {
         $values[$cid]['User.first_name'] = $contact['first_name'];
         $values[$cid]['User.last_name'] = $contact['last_name'];

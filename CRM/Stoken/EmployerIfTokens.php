@@ -99,7 +99,7 @@ class CRM_Stoken_EmployerIfTokens {
         }
 
         $location_type = $location_type_result['values'][0]['name'];
-        if (preg_match('/(work|dienstlich)/i', $location_type)) {
+        if (preg_match('/(work|dienstlich)/i', $location_type) === 1) {
           $values[$cid]['address.employer_if']    = $current_employer;
           $values[$cid]['address.employer_if_nl'] = $current_employer . "\n";
           $values[$cid]['address.employer_if_br'] = $current_employer . '<br/>';
