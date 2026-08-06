@@ -1,19 +1,27 @@
-site_name: Additional Tokens
+meldsite_name: Additional Tokens
+site_description: Adds some new handy CiviCRM tokens
+site_author: SYSTOPIA
 repo_url: https://github.com/systopia/de.systopia.stoken
-theme: material
 
-pages:
-- 'Home': index.md
+theme:
+  name: material
+
+nav:
+  - Introduction: index.md
 
 markdown_extensions:
-- attr_list
-- admonition
-- def_list
-- codehilite
-- toc:
-    permalink: true
-- pymdownx.superfences
-- pymdownx.inlinehilite
-- pymdownx.tilde
-- pymdownx.betterem
-- pymdownx.mark
+  - attr_list
+  - admonition
+  - def_list
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - pymdownx.mark
+
+plugins:
+  - search:
+      lang: en
