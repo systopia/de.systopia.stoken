@@ -34,7 +34,14 @@ class CRM_Stoken_EventMessagesIntegration {
   /**
    * Get the available token metadata
    *
-   * @return array
+   * @return array<string, array{
+   *   key: string,
+   *   description: string,
+   *   class: class-string,
+   *   group: string,
+   *   name: string,
+   *   local_name: string,
+   *   }>
    *   list of token => attribute
    */
   public static function getAllSTokens() {
