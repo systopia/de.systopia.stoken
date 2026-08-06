@@ -149,6 +149,7 @@ class CRM_Stoken_EventMessagesIntegration {
 
     // now gather token values
     $values = [];
+    $values[$contact_id] = [];
     foreach ($required_classes as $generator_class) {
       $generator_class::tokenValues($values, $cids, NULL, $token_list);
     }
