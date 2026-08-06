@@ -24,8 +24,10 @@ class CRM_Stoken_AddressTokens {
   /**
    * Handles civicrm_tokens hook
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokens
+   *
+   * @param array<string, array<string, string>> $tokens
    */
-  public static function addTokens(&$tokens) {
+  public static function addTokens(array &$tokens): void {
     // add tokens for primary addresses
     $tokens['Address']['Address.address_master'] = E::ts('Master Name');
 
@@ -55,17 +57,23 @@ class CRM_Stoken_AddressTokens {
 
   /**
    * Handles civicrm_tokenValues hook
-   * @param $values - array of values, keyed by contact id
-   * @param $cids - array of contactIDs that the system needs values for.
-   * @param $job - the job_id
-   * @param $tokens - tokens used in the mailing - use this to check whether
+   *
+   * @param array<int|string, array<string, mixed>> $values
+   *   array of values, keyed by contact id
+   * @param array<int, int|string>|string $cids
+   *   array of contactIDs that the system needs values for.
+   * @param int|null $job
+   *   the job_id
+   * @param array<string, array<int, string>> $tokens
+   *   tokens used in the mailing - use this to check whether
    *   a token is being used and avoid fetching data for unneeded tokens
-   * @param $context - the class name
+   * @param string|null $context
+   *   the class name
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Metrics.CyclomaticComplexity, Generic.Metrics.NestingLevel.TooHigh
-  public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity, Generic.Metrics.NestingLevel.TooHigh, Generic.Files.LineLength.TooLong
+  public static function tokenValues(array &$values, array|string $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
     // extract contact_ids
     if (is_string($cids)) {
       $contact_ids = explode(',', $cids);
@@ -93,7 +101,7 @@ class CRM_Stoken_AddressTokens {
           if (isset($location_type_addresses[$contact_id])) {
             $address = $location_type_addresses[$contact_id];
             foreach ($token_list as $token) {
-              $field = substr($token, strlen($location_type_id) + 1);
+              $field = substr($token, strlen((string) $location_type_id) + 1);
               $values[$contact_id]["{$token_class}.{$token}"] = $address[$field];
             }
           }
@@ -148,8 +156,10 @@ class CRM_Stoken_AddressTokens {
   /**
    * just check if the token list includes tokens that
    * require loading the master contact (address sharing)
+   *
+   * @param array<int, string> $token_list
    */
-  protected static function includesMasterTokens($token_list) {
+  protected static function includesMasterTokens(array $token_list): bool {
     foreach ($token_list as $token) {
       if (strstr($token, 'master')) {
         return TRUE;
@@ -161,8 +171,10 @@ class CRM_Stoken_AddressTokens {
   /**
    * just check if the token list includes the
    * "International Country" token
+   *
+   * @param array<int, string> $token_list
    */
-  protected static function includesIntlToken($token_list) {
+  protected static function includesIntlToken(array $token_list): bool {
     foreach ($token_list as $token) {
       if ('address_country_int' === substr($token, (strlen($token) - 19))) {
         return TRUE;
@@ -174,8 +186,13 @@ class CRM_Stoken_AddressTokens {
   /**
    * loads all addresses with a given type for the contact list
    * If $load_master is true, the fields 'master' will be popuplated
+   *
+   * @param array<int, int|string> $contact_ids
+   *
+   * @return array<int|string, array<string, mixed>>
    */
-  protected static function loadAddresses($contact_ids, $location_type_id, $load_master = FALSE) {
+  // phpcs:ignore Generic.Files.LineLength.TooLong
+  protected static function loadAddresses(array $contact_ids, ?int $location_type_id, bool $load_master = FALSE): array {
     // TODO: cache?
 
     // compile query
@@ -185,7 +202,7 @@ class CRM_Stoken_AddressTokens {
       . 'postal_code,city,country_id,master_id,contact_id',
       'options'          => ['limit' => 0],
     ];
-    if ($location_type_id) {
+    if ($location_type_id !== NULL) {
       $query_parameters['location_type_id'] = $location_type_id;
     }
     else {
@@ -239,8 +256,10 @@ class CRM_Stoken_AddressTokens {
 
   /**
    * get a unique map location_type_id => token class name
+   *
+   * @return array<int, string>
    */
-  public static function getLocationTypeMap() {
+  public static function getLocationTypeMap(): array {
     $location_type_map = [];
     $location_types = civicrm_api3('LocationType', 'get', [
       'is_active'     => 1,

@@ -27,8 +27,10 @@ use CRM_Stoken_ExtensionUtil as E;
 
 /**
  * Hook implementation: New Tokens
+ *
+ * @param array<string, array<string, string>> $tokens
  */
-function stoken_civicrm_tokens(&$tokens) {
+function stoken_civicrm_tokens(array &$tokens): void {
   CRM_Stoken_AddressTokens::addTokens($tokens);
   CRM_Stoken_DateTokens::addTokens($tokens);
   CRM_Stoken_EmployerIfTokens::addTokens($tokens);
@@ -38,8 +40,13 @@ function stoken_civicrm_tokens(&$tokens) {
 
 /**
  * Hook implementation: New Tokens
+ *
+ * @param array<int|string, array<string, mixed>> $values
+ * @param array<int, int|string> $cids
+ * @param array<string, array<int, string>> $tokens
  */
-function stoken_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
+// phpcs:ignore Generic.Files.LineLength.TooLong
+function stoken_civicrm_tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
   CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);
@@ -52,7 +59,7 @@ function stoken_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], 
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
-function stoken_civicrm_config(&$config) {
+function stoken_civicrm_config(CRM_Core_Config &$config): void {
   // subscribe to 'event messages' events (with our own wrapper to avoid duplicate registrations)
   if (class_exists('Civi\RemoteToolsDispatcher')) {
     $dispatcher = new RemoteToolsDispatcher();
@@ -74,7 +81,7 @@ function stoken_civicrm_config(&$config) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function stoken_civicrm_install() {
+function stoken_civicrm_install(): void {
   _stoken_civix_civicrm_install();
 }
 
@@ -83,6 +90,6 @@ function stoken_civicrm_install() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
-function stoken_civicrm_enable() {
+function stoken_civicrm_enable(): void {
   _stoken_civix_civicrm_enable();
 }

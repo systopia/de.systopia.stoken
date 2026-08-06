@@ -24,8 +24,10 @@ class CRM_Stoken_FormattingTokens {
   /**
    * Handles civicrm_tokens hook
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokens
+   *
+   * @param array<string, array<string, string>> $tokens
    */
-  public static function addTokens(&$tokens) {
+  public static function addTokens(array &$tokens): void {
     $tokens['address']['address.supplemental_address_1_nl'] = E::ts('Supplemental Address 1 (with line break)');
     $tokens['address']['address.supplemental_address_1_br'] = E::ts('Supplemental Address 1 (with HTML line break)');
     $tokens['address']['address.supplemental_address_2_nl'] = E::ts('Supplemental Address 2 (with line break)');
@@ -34,16 +36,23 @@ class CRM_Stoken_FormattingTokens {
 
   /**
    * Handles civicrm_tokenValues hook
-   * @param $values - array of values, keyed by contact id
-   * @param $cids - array of contactIDs that the system needs values for.
-   * @param $job - the job_id
-   * @param $tokens - tokens used in the mailing - use this to check whether
+   *
+   * @param array<int|string, array<string, mixed>> $values
+   *   array of values, keyed by contact id
+   * @param array<int, int|string> $cids
+   *   array of contactIDs that the system needs values for.
+   * @param int|null $job
+   *   the job_id
+   * @param array<string, array<int, string>> $tokens
+   *   tokens used in the mailing - use this to check whether
    *   a token is being used and avoid fetching data for unneeded tokens
-   * @param $context - the class name
+   * @param string|null $context
+   *   the class name
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
+  // phpcs:ignore Generic.Files.LineLength.TooLong
+  public static function tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
     $mytokens = [
       'supplemental_address_1_nl',
       'supplemental_address_1_br',

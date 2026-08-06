@@ -20,6 +20,7 @@ declare(strict_types = 1);
 use CRM_Stoken_ExtensionUtil as E;
 
 use Civi\EventMessages\MessageTokens as MessageTokens;
+use Civi\EventMessages\MessageTokenList as MessageTokenList;
 
 class CRM_Stoken_EventMessagesIntegration {
 
@@ -105,7 +106,7 @@ class CRM_Stoken_EventMessagesIntegration {
    * @param \Civi\EventMessages\MessageTokenList $tokenList
    *   token list event
    */
-  public static function listTokens($tokenList) {
+  public static function listTokens(MessageTokenList $tokenList): void {
     // gather tokens
     $tokens = self::getAllSTokens();
     foreach ($tokens as $token) {
@@ -120,7 +121,7 @@ class CRM_Stoken_EventMessagesIntegration {
    *   the token list
    */
   // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
-  public static function addTokens(MessageTokens $messageTokens) {
+  public static function addTokens(MessageTokens $messageTokens): void {
     // extract contact ID
     $tokens = $messageTokens->getTokens();
     $contact_id = $tokens['contact']['id'] ?? NULL;
