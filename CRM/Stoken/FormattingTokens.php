@@ -52,7 +52,7 @@ class CRM_Stoken_FormattingTokens {
     ];
     if (isset($tokens['address']) && is_array($tokens['address'])) {
       $my_used_tokens = array_intersect($tokens['address'], $mytokens);
-      if (empty($my_used_tokens)) {
+      if ($my_used_tokens === []) {
         // none of our tokens were used
         return;
       }
@@ -65,11 +65,11 @@ class CRM_Stoken_FormattingTokens {
       ]);
       foreach ($data['values'] as $entry) {
         $cid = $entry['id'];
-        if (!empty($entry['supplemental_address_1'])) {
+        if (isset($entry['supplemental_address_1']) && $entry['supplemental_address_1'] !== '') {
           $values[$cid]['address.supplemental_address_1_nl'] = $entry['supplemental_address_1'] . "\n";
           $values[$cid]['address.supplemental_address_1_br'] = $entry['supplemental_address_1'] . '<br/>';
         }
-        if (!empty($entry['supplemental_address_2'])) {
+        if (isset($entry['supplemental_address_2']) && $entry['supplemental_address_2'] !== '') {
           $values[$cid]['address.supplemental_address_2_nl'] = $entry['supplemental_address_2'] . "\n";
           $values[$cid]['address.supplemental_address_2_br'] = $entry['supplemental_address_2'] . '<br/>';
         }

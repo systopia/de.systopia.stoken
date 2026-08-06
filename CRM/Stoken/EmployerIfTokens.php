@@ -51,7 +51,7 @@ class CRM_Stoken_EmployerIfTokens {
   public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
     if (isset($tokens['address']) && is_array($tokens['address'])) {
       $used_tokens = array_intersect($tokens['address'], ['employer_if', 'employer_if_nl', 'employer_if_br']);
-      if (empty($used_tokens)) {
+      if ($used_tokens === []) {
         // none of our tokens were used
         return;
       }
@@ -64,7 +64,8 @@ class CRM_Stoken_EmployerIfTokens {
           'return' => 'current_employer',
           'id' => $cid,
         ]);
-        if (empty($contact_result['values'][0]['current_employer'])) {
+        $current_employer = $contact_result['values'][0]['current_employer'] ?? '';
+        if ($current_employer === '') {
           continue;
         }
         // get location_type_id of primary address
@@ -88,7 +89,6 @@ class CRM_Stoken_EmployerIfTokens {
           continue;
         }
 
-        $current_employer = $contact_result['values'][0]['current_employer'];
         $location_type = $location_type_result['values'][0]['name'];
         if (preg_match('/(work|dienstlich)/i', $location_type)) {
           $values[$cid]['address.employer_if']    = $current_employer;

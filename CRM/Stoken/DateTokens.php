@@ -51,7 +51,7 @@ class CRM_Stoken_DateTokens {
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
   public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
-    if (!empty($tokens['date'])) {
+    if (isset($tokens['date']) && is_array($tokens['date']) && $tokens['date'] !== []) {
       $oldlocale = setlocale(LC_ALL, 0);
       $dates = [];
       $now = new DateTime();
@@ -106,7 +106,7 @@ class CRM_Stoken_DateTokens {
       // restore locale and set data
       setlocale(LC_ALL, $oldlocale);
       foreach ($cids as $cid) {
-        $values[$cid] = empty($values[$cid]) ? $dates : $values[$cid] + $dates;
+        $values[$cid] = (!isset($values[$cid]) || $values[$cid] === []) ? $dates : $values[$cid] + $dates;
       }
     }
   }

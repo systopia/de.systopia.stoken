@@ -64,7 +64,7 @@ class CRM_Stoken_AddressTokens {
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.NestingLevel.TooHigh
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity, Generic.Metrics.NestingLevel.TooHigh
   public static function tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
     // extract contact_ids
     if (is_string($cids)) {
@@ -105,7 +105,7 @@ class CRM_Stoken_AddressTokens {
           }
         }
       }
-      elseif ($token_class == 'Address') {
+      elseif ($token_class === 'Address') {
         // add tokens for primary addresses (HBS-4943)
         if (self::includesMasterTokens($token_list) || self::includesIntlToken($token_list)) {
           $addresses = self::loadAddresses($contact_ids, NULL, TRUE);
@@ -119,10 +119,11 @@ class CRM_Stoken_AddressTokens {
               switch ($token) {
                 case 'address_country_int':
                   // add special country token (HBS-4944)
-                  if (!empty($address['country_id']) && $address['country_id'] != 1082) {
+                  $country_id = isset($address['country_id']) ? (int) $address['country_id'] : NULL;
+                  if ($country_id !== NULL && $country_id !== 1082) {
                     // this is an international (not German) country
                     $values[$contact_id]["{$token_class}.{$token}"] = CRM_Core_PseudoConstant::country(
-                      $address['country_id']
+                      $country_id
                     );
                   }
                   else {
@@ -131,7 +132,7 @@ class CRM_Stoken_AddressTokens {
                   break;
 
                 case 'address_master':
-                  $values[$contact_id]["{$token_class}.{$token}"] = CRM_Utils_Array::value('master', $address, '');
+                  $values[$contact_id]["{$token_class}.{$token}"] = $address['master'] ?? '';
                   break;
 
                 default:
@@ -163,7 +164,7 @@ class CRM_Stoken_AddressTokens {
    */
   protected static function includesIntlToken($token_list) {
     foreach ($token_list as $token) {
-      if ('address_country_int' == substr($token, (strlen($token) - 19))) {
+      if ('address_country_int' === substr($token, (strlen($token) - 19))) {
         return TRUE;
       }
     }
@@ -197,14 +198,15 @@ class CRM_Stoken_AddressTokens {
     $contactId_2_masterAddressId  = [];
     foreach ($query['values'] as $address) {
       $contactId_2_address[$address['contact_id']] = $address;
-      if (!empty($address['master_id'])) {
-        $contactId_2_masterAddressId[$address['contact_id']] = $address['master_id'];
+      $master_id = isset($address['master_id']) ? (int) $address['master_id'] : 0;
+      if ($master_id !== 0) {
+        $contactId_2_masterAddressId[$address['contact_id']] = $master_id;
       }
     }
 
     // add master information if requested
     // TODO: speed up with SQL?
-    if ($load_master && !empty($contactId_2_masterAddressId)) {
+    if ($load_master && $contactId_2_masterAddressId !== []) {
       // step 1: load all master addresses
       $master_query = civicrm_api3('Address', 'get', [
         'id'         => ['IN' => array_values($contactId_2_masterAddressId)],
@@ -228,7 +230,7 @@ class CRM_Stoken_AddressTokens {
       ]);
       foreach ($contactId_2_masterContactId as $contact_id => $master_contact_id) {
         $master_contact = $master_contactquery['values'][$master_contact_id];
-        $contactId_2_address[$contact_id]['master']   = CRM_Utils_Array::value('display_name', $master_contact, '');
+        $contactId_2_address[$contact_id]['master']   = $master_contact['display_name'] ?? '';
       }
     }
 
@@ -253,7 +255,7 @@ class CRM_Stoken_AddressTokens {
       $preferred_name = preg_replace('#ö#', 'oe', $preferred_name);
       $preferred_name = preg_replace('#[^\w]#', '_', $preferred_name);
       $actual_name = $preferred_name;
-      while (in_array($actual_name, array_values($location_type_map))) {
+      while (in_array($actual_name, array_values($location_type_map), TRUE)) {
         // name already exists -> just extend
         $actual_name = $actual_name . '_';
       }

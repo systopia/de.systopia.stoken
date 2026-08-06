@@ -69,7 +69,7 @@ class CRM_Stoken_EventMessagesIntegration {
           foreach ($group_tokens as $token_name => $token_title) {
             // skip wrongly added tokens(!) - there seems to be an error in the token generator...
             $token_names = explode('.', $token_name);
-            if ($token_names[0] != $group) {
+            if ($token_names[0] !== $group) {
               continue;
             }
 
@@ -115,11 +115,11 @@ class CRM_Stoken_EventMessagesIntegration {
   public static function addTokens(MessageTokens $messageTokens) {
     // extract contact ID
     $tokens = $messageTokens->getTokens();
-    if (empty($tokens['contact']['id'])) {
+    $contact_id = $tokens['contact']['id'] ?? NULL;
+    if ($contact_id === NULL || (int) $contact_id <= 0) {
       // no contact found
       return;
     }
-    $contact_id = $tokens['contact']['id'];
     $cids = [$contact_id];
 
     // find out which tokens we need
