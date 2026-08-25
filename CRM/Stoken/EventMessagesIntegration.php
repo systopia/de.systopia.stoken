@@ -15,30 +15,37 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-use CRM_Stoken_ExtensionUtil as E;
+declare(strict_types = 1);
 
 use Civi\EventMessages\MessageTokens as MessageTokens;
 use Civi\EventMessages\MessageTokenList as MessageTokenList;
 
 class CRM_Stoken_EventMessagesIntegration {
 
-  const TOKEN_CLASSES = [
-      'CRM_Stoken_AddressTokens',
-      'CRM_Stoken_DateTokens',
-      'CRM_Stoken_EmployerIfTokens',
-      'CRM_Stoken_FormattingTokens',
-      'CRM_Stoken_UserTokens'
+  public const TOKEN_CLASSES = [
+    CRM_Stoken_AddressTokens::class,
+    CRM_Stoken_DateTokens::class,
+    CRM_Stoken_EmployerIfTokens::class,
+    CRM_Stoken_FormattingTokens::class,
+    CRM_Stoken_UserTokens::class,
   ];
 
   /**
    * Get the available token metadata
    *
-   * @return array
-   *  list of token => attribute
+   * @return array<string, array{
+   *   key: string,
+   *   description: string,
+   *   class: class-string,
+   *   group: string,
+   *   name: string,
+   *   local_name: string,
+   *   }>
+   *   list of token => attribute
    */
-  public static function getAllSTokens() {
-    static $all_tokens = null;
-    if ($all_tokens === null) {
+  public static function getAllSTokens(): array {
+    static $all_tokens = NULL;
+    if ($all_tokens === NULL) {
       $all_tokens = [];
 
       foreach (self::TOKEN_CLASSES as $token_class) {
@@ -60,25 +67,28 @@ class CRM_Stoken_EventMessagesIntegration {
           $group_segments = explode('_', $group);
           if (count($group_segments) > 1) {
             $prefix = "[{$group_segments[1]} {$group_segments[0]}] ";
-          } else {
+          }
+          else {
             $prefix = '';
           }
 
           foreach ($group_tokens as $token_name => $token_title) {
             // skip wrongly added tokens(!) - there seems to be an error in the token generator...
             $token_names = explode('.', $token_name);
-            if ($token_names[0] != $group) continue;
+            if ($token_names[0] !== $group) {
+              continue;
+            }
 
             // compile token data
             $token_key = 'stoken_' . $group . '_' . $token_names[1];
             $description = $token_title;
             $all_tokens[$token_name] = [
-                'key'         => $token_key,
-                'description' => $prefix . $description,
-                'class'       => $token_class,
-                'group'       => $group,
-                'name'        => $token_name,
-                'local_name'  => $token_names[1],
+              'key'         => $token_key,
+              'description' => $prefix . $description,
+              'class'       => $token_class,
+              'group'       => $group,
+              'name'        => $token_name,
+              'local_name'  => $token_names[1],
             ];
           }
         }
@@ -91,11 +101,10 @@ class CRM_Stoken_EventMessagesIntegration {
   /**
    * Register our tokens with the EventMessages extension
    *
-   * @param MessageTokenList $tokenList
+   * @param \Civi\EventMessages\MessageTokenList $tokenList
    *   token list event
    */
-  public static function listTokens($tokenList)
-  {
+  public static function listTokens(MessageTokenList $tokenList): void {
     // gather tokens
     $tokens = self::getAllSTokens();
     foreach ($tokens as $token) {
@@ -106,18 +115,20 @@ class CRM_Stoken_EventMessagesIntegration {
   /**
    * Provide token values to our
    *
-   * @param MessageTokens $messageTokens
+   * @param \Civi\EventMessages\MessageTokens $messageTokens
    *   the token list
    */
-  public static function addTokens(MessageTokens $messageTokens)
-  {
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+  public static function addTokens(MessageTokens $messageTokens): void {
     // extract contact ID
     $tokens = $messageTokens->getTokens();
-    if (empty($tokens['contact']['id'])) {
+    $contact = is_array($tokens['contact'] ?? NULL) ? $tokens['contact'] : [];
+    $contact_id = $contact['id'] ?? NULL;
+    if (!is_numeric($contact_id) || (int) $contact_id <= 0) {
       // no contact found
       return;
     }
-    $contact_id = $tokens['contact']['id'];
+    $contact_id = (int) $contact_id;
     $cids = [$contact_id];
 
     // find out which tokens we need
@@ -139,23 +150,29 @@ class CRM_Stoken_EventMessagesIntegration {
       $required_classes = array_keys($classes_used);
     }
 
-    // generate token_list ($token_group => $token_list)
+    // generate the token list, grouped by token group
     $token_list = [];
     foreach ($used_tokens as $used_token) {
       $token_list[$used_token['group']][] = $used_token['local_name'];
     }
 
     // now gather token values
+    /** @var array<int|string, array<string, mixed>> $values */
     $values = [];
     foreach ($required_classes as $generator_class) {
-      $generator_class::tokenValues($values, $cids, null, $token_list);
+      $generator_class::tokenValues($values, $cids, NULL, $token_list);
     }
 
     // finally: set tokens
     foreach ($used_tokens as $used_token) {
       if (isset($values[$contact_id]["{$used_token['group']}.{$used_token['local_name']}"])) {
-        $messageTokens->setToken($used_token['key'], $values[$contact_id]["{$used_token['group']}.{$used_token['local_name']}"], false);
+        $messageTokens->setToken(
+          $used_token['key'],
+          $values[$contact_id]["{$used_token['group']}.{$used_token['local_name']}"],
+          FALSE
+        );
       }
     }
   }
+
 }

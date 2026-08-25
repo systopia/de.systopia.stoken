@@ -18,9 +18,7 @@
   <version>1.1.0-dev</version>
   <develStage>dev</develStage>
   <compatibility>
-    <ver>4.6</ver>
-    <ver>4.7</ver>
-    <ver>5.0</ver>
+    <ver>5.76</ver>
   </compatibility>
   <civix>
     <namespace>CRM/Stoken</namespace>

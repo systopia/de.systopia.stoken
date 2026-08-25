@@ -15,18 +15,19 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 require_once 'stoken.civix.php';
 
-// phpcs:disable
 use Civi\RemoteToolsDispatcher;
 use CRM_Stoken_ExtensionUtil as E;
-// phpcs:enable
-
 
 /**
  * Hook implementation: New Tokens
+ *
+ * @param array<string, array<string, string>> $tokens
  */
-function stoken_civicrm_tokens( &$tokens ) {
+function stoken_civicrm_tokens(array &$tokens): void {
   CRM_Stoken_AddressTokens::addTokens($tokens);
   CRM_Stoken_DateTokens::addTokens($tokens);
   CRM_Stoken_EmployerIfTokens::addTokens($tokens);
@@ -36,13 +37,33 @@ function stoken_civicrm_tokens( &$tokens ) {
 
 /**
  * Hook implementation: New Tokens
+ *
+ * @param array<int|string, array<string, mixed>> $values
+ * @param array<int|string, int|string>|string $cids
+ * @param array<string, list<string>> $tokens
  */
-function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
-  CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_FormattingTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_UserTokens::tokenValues($values, $cids, $job, $tokens, $context);
+function stoken_civicrm_tokenValues(
+  array &$values,
+  array|string $cids,
+  ?int $job = NULL,
+  array $tokens = [],
+  ?string $context = NULL
+): void {
+  if (is_string($cids)) {
+    $contact_ids = explode(',', $cids);
+  }
+  elseif (isset($cids['contact_id'])) {
+    $contact_ids = [$cids['contact_id']];
+  }
+  else {
+    $contact_ids = $cids;
+  }
+
+  CRM_Stoken_AddressTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_DateTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_EmployerIfTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_FormattingTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_UserTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
 }
 
 /**
@@ -50,17 +71,17 @@ function stoken_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = arra
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
-function stoken_civicrm_config(&$config) {
+function stoken_civicrm_config(CRM_Core_Config &$config): void {
   // subscribe to 'event messages' events (with our own wrapper to avoid duplicate registrations)
-  if (class_exists('Civi\RemoteToolsDispatcher')) {
+  if (class_exists(RemoteToolsDispatcher::class)) {
     $dispatcher = new RemoteToolsDispatcher();
     $dispatcher->addUniqueListener(
         'civi.eventmessages.tokenlist',
-        ['CRM_Stoken_EventMessagesIntegration', 'listTokens']
+        [CRM_Stoken_EventMessagesIntegration::class, 'listTokens']
     );
     $dispatcher->addUniqueListener(
         'civi.eventmessages.tokens',
-        ['CRM_Stoken_EventMessagesIntegration', 'addTokens']
+        [CRM_Stoken_EventMessagesIntegration::class, 'addTokens']
     );
   }
 
@@ -72,7 +93,7 @@ function stoken_civicrm_config(&$config) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function stoken_civicrm_install() {
+function stoken_civicrm_install(): void {
   _stoken_civix_civicrm_install();
 }
 
@@ -81,6 +102,6 @@ function stoken_civicrm_install() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
-function stoken_civicrm_enable() {
+function stoken_civicrm_enable(): void {
   _stoken_civix_civicrm_enable();
 }
