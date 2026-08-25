@@ -1,16 +1,3 @@
-# Copyright CiviCRM LLC (c) 2004-2015
-# This file is distributed under the same license as the CiviCRM package.
-# If you contribute heavily to a translation and deem your work copyrightable,
-# make sure you license it to CiviCRM LLC under Academic Free License 3.0.
-msgid ""
-msgstr ""
-"Project-Id-Version: de.systopia.stoken\n"
-"POT-Creation-Date: 2018-05-18 14:56+0200\n"
-"Language-Team: CiviCRM Translators <civicrm-translators@lists.civicrm.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-
 #: CRM/Stoken/AddressTokens.php
 msgid "Master Name"
 msgstr ""
@@ -59,6 +46,26 @@ msgstr ""
 msgid "Current Date English (long)"
 msgstr ""
 
+#: CRM/Stoken/DateTokens.php
+msgid "Current Date French/France (long)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php
+msgid "Current Date French/France (short)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php
+msgid "Current Date Spanish/Spain (short)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php
+msgid "Current Date Spanish/Spain (medium)"
+msgstr ""
+
+#: CRM/Stoken/DateTokens.php
+msgid "Current Date Spanish/Spain (long)"
+msgstr ""
+
 #: CRM/Stoken/EmployerIfTokens.php
 msgid "Employer if work-address"
 msgstr ""
@@ -94,3 +101,4 @@ msgstr ""
 #: CRM/Stoken/UserTokens.php
 msgid "Last Name"
 msgstr ""
+
