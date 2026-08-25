@@ -60,7 +60,7 @@ class CRM_Stoken_AddressTokens {
    *
    * @param array<int|string, array<string, mixed>> $values
    *   array of values, keyed by contact id
-   * @param array<int, int|string>|string $cids
+   * @param array<int|string, int|string> $cids
    *   array of contactIDs that the system needs values for.
    * @param int|null $job
    *   the job_id
@@ -75,24 +75,17 @@ class CRM_Stoken_AddressTokens {
   // phpcs:ignore Generic.Metrics.CyclomaticComplexity, Generic.Metrics.NestingLevel.TooHigh
   public static function tokenValues(
     array &$values,
-    array|string $cids,
+    array $cids,
     ?int $job = NULL,
     array $tokens = [],
     ?string $context = NULL
   ): void {
     // extract contact_ids
-    if (is_string($cids)) {
-      $contact_ids = explode(',', $cids);
-    }
-    elseif (isset($cids['contact_id'])) {
+    if (isset($cids['contact_id'])) {
       $contact_ids = [$cids['contact_id']];
     }
-    elseif (is_array($cids)) {
-      $contact_ids = $cids;
-    }
     else {
-      error_log('Cannot interpret cids: ' . json_encode($cids));
-      return;
+      $contact_ids = $cids;
     }
 
     // load our mapping
@@ -194,7 +187,7 @@ class CRM_Stoken_AddressTokens {
    * loads all addresses with a given type for the contact list
    * If $load_master is true, the fields 'master' will be popuplated
    *
-   * @param array<int, int|string> $contact_ids
+   * @param array<int|string, int|string> $contact_ids
    *
    * @return array<int|string, array<string, mixed>>
    */

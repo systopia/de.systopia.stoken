@@ -61,14 +61,6 @@ parameters:
 			# de.systopia.eventmessages extension: our PHPStan stub only
 			# reflects its current API shape, so PHPStan can't know that
 			# older versions may lack requiresToken(). See phpstan-stubs/EventMessages.stub.php.
-		-
-			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
-			path: '*/CRM/Stoken/AddressTokens.php'
-			count: 1
-			# Deliberately defensive: tokenValues() historically also accepts
-			# $cids as a comma-separated string or as ['contact_id' => ...],
-			# unlike the other token classes. Kept as-is on purpose; only the
-			# parameter type was narrowed to array|string for PHPStan.
 	tmpDir: .phpstan
 
 parametersSchema:
