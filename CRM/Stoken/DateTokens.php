@@ -58,8 +58,13 @@ class CRM_Stoken_DateTokens {
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Files.LineLength.TooLong
-  public static function tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
+  public static function tokenValues(
+    array &$values,
+    array $cids,
+    ?int $job = NULL,
+    array $tokens = [],
+    ?string $context = NULL
+  ): void {
     if (isset($tokens['date']) && is_array($tokens['date']) && $tokens['date'] !== []) {
       $oldlocale = setlocale(LC_ALL, '0');
       $dates = [];

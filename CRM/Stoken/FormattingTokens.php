@@ -51,8 +51,13 @@ class CRM_Stoken_FormattingTokens {
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Files.LineLength.TooLong
-  public static function tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
+  public static function tokenValues(
+    array &$values,
+    array $cids,
+    ?int $job = NULL,
+    array $tokens = [],
+    ?string $context = NULL
+  ): void {
     $mytokens = [
       'supplemental_address_1_nl',
       'supplemental_address_1_br',

@@ -54,8 +54,13 @@ class CRM_Stoken_UserTokens {
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Files.LineLength.TooLong
-  public static function tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
+  public static function tokenValues(
+    array &$values,
+    array $cids,
+    ?int $job = NULL,
+    array $tokens = [],
+    ?string $context = NULL
+  ): void {
     $user_contact_id = CRM_Core_Session::getLoggedInContactID();
     if ($user_contact_id !== NULL) {
       $contact = civicrm_api3('Contact', 'getsingle', [

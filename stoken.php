@@ -45,8 +45,13 @@ function stoken_civicrm_tokens(array &$tokens): void {
  * @param array<int, int|string> $cids
  * @param array<string, array<int, string>> $tokens
  */
-// phpcs:ignore Generic.Files.LineLength.TooLong
-function stoken_civicrm_tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
+function stoken_civicrm_tokenValues(
+  array &$values,
+  array $cids,
+  ?int $job = NULL,
+  array $tokens = [],
+  ?string $context = NULL
+): void {
   CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
   CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);

@@ -159,11 +159,8 @@ class CRM_Stoken_EventMessagesIntegration {
     }
 
     // now gather token values
+    /** @var array<int|string, array<string, mixed>> $values */
     $values = [];
-    $values[$contact_id] = [];
-    foreach ($used_tokens as $used_token) {
-      $values[$contact_id]["{$used_token['group']}.{$used_token['local_name']}"] = NULL;
-    }
     foreach ($required_classes as $generator_class) {
       $generator_class::tokenValues($values, $cids, NULL, $token_list);
     }

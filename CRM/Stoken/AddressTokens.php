@@ -72,8 +72,14 @@ class CRM_Stoken_AddressTokens {
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Metrics.CyclomaticComplexity, Generic.Metrics.NestingLevel.TooHigh, Generic.Files.LineLength.TooLong
-  public static function tokenValues(array &$values, array|string $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity, Generic.Metrics.NestingLevel.TooHigh
+  public static function tokenValues(
+    array &$values,
+    array|string $cids,
+    ?int $job = NULL,
+    array $tokens = [],
+    ?string $context = NULL
+  ): void {
     // extract contact_ids
     if (is_string($cids)) {
       $contact_ids = explode(',', $cids);
@@ -192,8 +198,12 @@ class CRM_Stoken_AddressTokens {
    *
    * @return array<int|string, array<string, mixed>>
    */
-  // phpcs:ignore Generic.Files.LineLength.TooLong, Generic.Metrics.CyclomaticComplexity.TooHigh
-  protected static function loadAddresses(array $contact_ids, ?int $location_type_id, bool $load_master = FALSE): array {
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+  protected static function loadAddresses(
+    array $contact_ids,
+    ?int $location_type_id,
+    bool $load_master = FALSE
+  ): array {
     // TODO: cache?
 
     // compile query

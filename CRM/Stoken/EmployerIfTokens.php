@@ -56,8 +56,13 @@ class CRM_Stoken_EmployerIfTokens {
    *
    * @see https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_tokenValues
    */
-  // phpcs:ignore Generic.Files.LineLength.TooLong
-  public static function tokenValues(array &$values, array $cids, ?int $job = NULL, array $tokens = [], ?string $context = NULL): void {
+  public static function tokenValues(
+    array &$values,
+    array $cids,
+    ?int $job = NULL,
+    array $tokens = [],
+    ?string $context = NULL
+  ): void {
     if (isset($tokens['address']) && is_array($tokens['address'])) {
       $used_tokens = array_intersect($tokens['address'], ['employer_if', 'employer_if_nl', 'employer_if_br']);
       if ($used_tokens === []) {
