@@ -1,4 +1,12 @@
 parameters:
+	civicrm:
+		# The class \CRM_Core_Smarty provides various methods. Methods that are
+		# not explicitly defined are delegated to the actual Smarty object via
+		# __call(). In many cases explicit methods like fetchWith() (or
+		# \CRM_Utils_String::parseOneOffStringThroughSmarty()) should be enough.
+		# Though if one of the implicit methods is used, this option has to be
+		# enabled.
+		implicitSmartyMethodsUsed: false
 	paths:
 		- CRM
 		- tests
@@ -24,6 +32,8 @@ parameters:
 		- CRM_Core_DAO
 		- civicrm_api3
 	earlyTerminatingMethodCalls:
+		CRM_Core_Error:
+			- statusBounce
 		CRM_Utils_System:
 			- civiExit
 			- redirect
@@ -60,3 +70,10 @@ parameters:
 			# unlike the other token classes. Kept as-is on purpose; only the
 			# parameter type was narrowed to array|string for PHPStan.
 	tmpDir: .phpstan
+
+parametersSchema:
+	civicrm: structure([
+		implicitSmartyMethodsUsed: bool()
+		# Optional extensions (i.e. not required in info.xml) that should be added to class loader.
+		?optionalExtensions: listOf(string())
+	])

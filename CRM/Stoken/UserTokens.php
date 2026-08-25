@@ -30,7 +30,7 @@ class CRM_Stoken_UserTokens {
   public static function addTokens(array &$tokens): void {
     $user_contact_id = CRM_Core_Session::getLoggedInContactID();
 
-    if ($user_contact_id !== NULL) {
+    if ($user_contact_id !== NULL && $user_contact_id > 0) {
       // add tokens for logged-in user
       $tokens['User']['User.first_name'] = E::ts('First Name');
       $tokens['User']['User.last_name']  = E::ts('Last Name');
@@ -62,7 +62,7 @@ class CRM_Stoken_UserTokens {
     ?string $context = NULL
   ): void {
     $user_contact_id = CRM_Core_Session::getLoggedInContactID();
-    if ($user_contact_id !== NULL) {
+    if ($user_contact_id !== NULL && $user_contact_id > 0) {
       $contact = civicrm_api3('Contact', 'getsingle', [
         'id' => $user_contact_id,
         'return' => 'first_name,last_name',

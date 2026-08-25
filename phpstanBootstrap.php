@@ -15,26 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 declare(strict_types = 1);
 
 // phpcs:disable Drupal.Commenting.DocComment.ContentAfterOpen
 /** @var \PHPStan\DependencyInjection\Container $container */
-/** @phpstan-var array<string> $bootstrapFiles */
 
 use Composer\Autoload\ClassLoader;
 
+/** @phpstan-var list<string> $bootstrapFiles */
 $bootstrapFiles = $container->getParameter('bootstrapFiles');
 foreach ($bootstrapFiles as $bootstrapFile) {
   if (str_ends_with($bootstrapFile, 'vendor/autoload.php')) {
     $vendorDir = dirname($bootstrapFile);
     // Installation via composer (e.g. as Drupal module)
-    $civiCrmVendorDir = $vendorDir . '/civicrm';
-    $civiCrmCoreDir = $civiCrmVendorDir . '/civicrm-core';
-    $civiCrmPackagesDir = $civiCrmVendorDir . '/civicrm-packages';
+    $civiCrmVendorDir = "$vendorDir/civicrm";
+    $civiCrmCoreDir = "$civiCrmVendorDir/civicrm-core";
+    $civiCrmCoreExtDir = "$civiCrmVendorDir/civicrm-core/ext";
+    $civiCrmPackagesDir = "$civiCrmVendorDir/civicrm-packages";
     // Installation without composer (e.g. as WordPress plugin)
     if (!is_dir($civiCrmCoreDir) || !is_dir($civiCrmPackagesDir)) {
-      $civiCrmCoreDir = $vendorDir . '/..';
-      $civiCrmPackagesDir = $civiCrmCoreDir . '/packages';
+      $civiCrmCoreDir = "$vendorDir/..";
+      $civiCrmPackagesDir = "$civiCrmCoreDir/packages";
     }
     if (!is_dir($civiCrmCoreDir) || !is_dir($civiCrmPackagesDir)) {
       continue;
@@ -62,26 +64,48 @@ foreach ($bootstrapFiles as $bootstrapFile) {
       $loader->add('DB_', [$civiCrmPackagesDir]);
       $loader->add('HTML_', [$civiCrmPackagesDir]);
 
-      // The class \Smarty extended by \CRM_Core_SmartyCompatibility uses the
-      // __call() method to delegate method calls to \Smarty\Smarty, but hasn't
-      // defined the methods itself which results in method not found errors. By
-      // aliasing \Smarty\Smarty to \Smarty we avoid these errors.
-      $smartyAutoloadFile = $civiCrmPackagesDir . '/smarty5/vendor/autoload.php';
-      if (file_exists($smartyAutoloadFile)) {
-        require_once $smartyAutoloadFile;
-        class_alias(\Smarty\Smarty::class, 'Smarty');
-      }
-
-      $coreExtDirs = glob("$civiCrmCoreDir/ext/*");
-      if (FALSE !== $coreExtDirs) {
-        foreach ($coreExtDirs as $extensionDir) {
-          if (is_dir("$extensionDir/CRM")) {
-            $loader->add('CRM_', [$extensionDir]);
+      // @phpstan-ignore-next-line
+      if ($container->getParameter('civicrm')['implicitSmartyMethodsUsed']) {
+        // In CiviCRM <=6.16 the class \Smarty extended by
+        // \CRM_Core_SmartyCompatibility uses the __call() method to delegate
+        // method calls to \Smarty\Smarty, but hasn't defined the methods itself
+        // which results in method not found errors. By aliasing \Smarty\Smarty
+        // to \Smarty we avoid these errors.
+        $smartyAutoloadFile = "$civiCrmPackagesDir/smarty5/vendor/autoload.php";
+        if (file_exists($smartyAutoloadFile)) {
+          require_once $smartyAutoloadFile;
+          // @phpstan-ignore class.notFound
+          class_alias(\Smarty\Smarty::class, 'Smarty');
+        }
+        // Since CiviCRM 6.17 Smarty is installed as composer package.
+        elseif (class_exists(\Smarty\Smarty::class)) {
+          // Since CiviCRM 6.18 the class delegating the method calls is
+          // \Civi\Smarty instead of \Smarty.
+          if (class_exists(\Civi\Smarty::class)) {
+            class_alias(\Smarty\Smarty::class, \Civi\Smarty::class);
           }
-          if (is_dir("$extensionDir/Civi")) {
-            $loader->addPsr4('Civi\\', [$extensionDir . '/Civi']);
+          else {
+            class_alias(\Smarty\Smarty::class, \Smarty::class);
           }
         }
+      }
+      else {
+        // Required in CiviCRM <=6.16
+        // Prevent call to method getPath() on null in crm_smarty_compatibility_get_path()
+        // https://github.com/civicrm/civicrm-core/blob/001aa785e7b6b9b4252a33cc6726e1ea2657487b/CRM/Core/SmartyCompatibility.php#L48
+        // phpcs:ignore Drupal.Commenting.ClassComment.WrongStyle
+        class Smarty {}
+      }
+
+      $simpleXml = simplexml_load_file(__DIR__ . '/info.xml');
+      foreach ($simpleXml->requires->ext ?? [] as $extension) {
+        addExtensionToClassLoader($loader, (string) $extension, $civiCrmCoreExtDir);
+      }
+
+      /** @var string $extension */
+      // @phpstan-ignore-next-line
+      foreach ($container->getParameter('civicrm')['optionalExtensions'] ?? [] as $extension) {
+        addExtensionToClassLoader($loader, $extension, $civiCrmCoreExtDir);
       }
 
       $loader->register();
@@ -93,4 +117,40 @@ foreach ($bootstrapFiles as $bootstrapFile) {
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   require_once __DIR__ . '/vendor/autoload.php';
+}
+
+function addExtensionToClassLoader(ClassLoader $loader, string $extension, string $civiCrmCoreExtDir): void {
+  // Support symlinks. Current working dir should be the extensions' directory
+  // relative to the "ext" directory.
+  // Note: getcwd() is not used because it returns the real path.
+  static $currentWorkingDirParent;
+  // @phpstan-ignore argument.type
+  $currentWorkingDirParent ??= dirname(getenv('PWD'));
+  $candidates = [
+    "$currentWorkingDirParent/$extension",
+    __DIR__ . "/../$extension",
+    "$civiCrmCoreExtDir/$extension",
+  ];
+  foreach ($candidates as $candidate) {
+    if (is_dir($candidate)) {
+      addExtensionDirToClassLoader($loader, $candidate);
+
+      return;
+    }
+  }
+
+  fprintf(STDERR, "Warning: Could not find CiviCRM extension $extension.\n\n");
+}
+
+function addExtensionDirToClassLoader(ClassLoader $loader, string $extensionDir): void {
+  if (is_dir("$extensionDir/CRM")) {
+    $loader->add('CRM_', [$extensionDir]);
+  }
+  if (is_dir("$extensionDir/Civi")) {
+    $loader->addPsr4('Civi\\', ["$extensionDir/Civi"]);
+  }
+
+  if (file_exists("$extensionDir/vendor/autoload.php")) {
+    require_once "$extensionDir/vendor/autoload.php";
+  }
 }
