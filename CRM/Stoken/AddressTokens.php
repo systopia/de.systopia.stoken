@@ -64,7 +64,7 @@ class CRM_Stoken_AddressTokens {
    *   array of contactIDs that the system needs values for.
    * @param int|null $job
    *   the job_id
-   * @param array<string, array<int, string>> $tokens
+   * @param array<string, list<string>> $tokens
    *   tokens used in the mailing - use this to check whether
    *   a token is being used and avoid fetching data for unneeded tokens
    * @param string|null $context
@@ -157,7 +157,7 @@ class CRM_Stoken_AddressTokens {
    * just check if the token list includes tokens that
    * require loading the master contact (address sharing)
    *
-   * @param array<int, string> $token_list
+   * @param list<string> $token_list
    */
   protected static function includesMasterTokens(array $token_list): bool {
     foreach ($token_list as $token) {
@@ -172,7 +172,7 @@ class CRM_Stoken_AddressTokens {
    * just check if the token list includes the
    * "International Country" token
    *
-   * @param array<int, string> $token_list
+   * @param list<string> $token_list
    */
   protected static function includesIntlToken(array $token_list): bool {
     foreach ($token_list as $token) {

@@ -17,19 +17,17 @@
 
 declare(strict_types = 1);
 
-use CRM_Stoken_ExtensionUtil as E;
-
 use Civi\EventMessages\MessageTokens as MessageTokens;
 use Civi\EventMessages\MessageTokenList as MessageTokenList;
 
 class CRM_Stoken_EventMessagesIntegration {
 
   public const TOKEN_CLASSES = [
-    'CRM_Stoken_AddressTokens',
-    'CRM_Stoken_DateTokens',
-    'CRM_Stoken_EmployerIfTokens',
-    'CRM_Stoken_FormattingTokens',
-    'CRM_Stoken_UserTokens',
+    CRM_Stoken_AddressTokens::class,
+    CRM_Stoken_DateTokens::class,
+    CRM_Stoken_EmployerIfTokens::class,
+    CRM_Stoken_FormattingTokens::class,
+    CRM_Stoken_UserTokens::class,
   ];
 
   /**
@@ -45,7 +43,7 @@ class CRM_Stoken_EventMessagesIntegration {
    *   }>
    *   list of token => attribute
    */
-  public static function getAllSTokens() {
+  public static function getAllSTokens(): array {
     static $all_tokens = NULL;
     if ($all_tokens === NULL) {
       $all_tokens = [];

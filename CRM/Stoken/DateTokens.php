@@ -50,7 +50,7 @@ class CRM_Stoken_DateTokens {
    *   array of contactIDs that the system needs values for.
    * @param int|null $job
    *   the job_id
-   * @param array<string, array<int, string>> $tokens
+   * @param array<string, list<string>> $tokens
    *   tokens used in the mailing - use this to check whether
    *   a token is being used and avoid fetching data for unneeded tokens
    * @param string|null $context

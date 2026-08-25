@@ -1,5 +1,4 @@
 <?php
-// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 /*-------------------------------------------------------+
 | SYSTOPIA Additional Tokens                             |
 | Copyright (C) 2016-2018 SYSTOPIA                       |
@@ -20,10 +19,8 @@ declare(strict_types = 1);
 
 require_once 'stoken.civix.php';
 
-// phpcs:disable
 use Civi\RemoteToolsDispatcher;
 use CRM_Stoken_ExtensionUtil as E;
-// phpcs:enable
 
 /**
  * Hook implementation: New Tokens
@@ -43,7 +40,7 @@ function stoken_civicrm_tokens(array &$tokens): void {
  *
  * @param array<int|string, array<string, mixed>> $values
  * @param array<int|string, int|string>|string $cids
- * @param array<string, array<int, string>> $tokens
+ * @param array<string, list<string>> $tokens
  */
 function stoken_civicrm_tokenValues(
   array &$values,
@@ -76,15 +73,15 @@ function stoken_civicrm_tokenValues(
  */
 function stoken_civicrm_config(CRM_Core_Config &$config): void {
   // subscribe to 'event messages' events (with our own wrapper to avoid duplicate registrations)
-  if (class_exists('Civi\RemoteToolsDispatcher')) {
+  if (class_exists(RemoteToolsDispatcher::class)) {
     $dispatcher = new RemoteToolsDispatcher();
     $dispatcher->addUniqueListener(
         'civi.eventmessages.tokenlist',
-        ['CRM_Stoken_EventMessagesIntegration', 'listTokens']
+        [CRM_Stoken_EventMessagesIntegration::class, 'listTokens']
     );
     $dispatcher->addUniqueListener(
         'civi.eventmessages.tokens',
-        ['CRM_Stoken_EventMessagesIntegration', 'addTokens']
+        [CRM_Stoken_EventMessagesIntegration::class, 'addTokens']
     );
   }
 

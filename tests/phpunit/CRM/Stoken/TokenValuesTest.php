@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 
 use Civi\Test;
+use Civi\Test\CiviEnvBuilder;
 use Civi\Test\HeadlessInterface;
 use Civi\Test\TransactionalInterface;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CRM_Stoken_TokenValuesTest extends TestCase implements HeadlessInterface, TransactionalInterface {
 
-  public function setUpHeadless(): Test\CiviEnvBuilder {
+  public function setUpHeadless(): CiviEnvBuilder {
     return Test::headless()
       ->installMe(__DIR__)
       ->apply();
