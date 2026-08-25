@@ -42,7 +42,7 @@ class CRM_Stoken_UserTokens {
    *
    * @param array<int|string, array<string, mixed>> $values
    *   array of values, keyed by contact id
-   * @param array<int, int|string> $cids
+   * @param array<int|string, int|string> $cids
    *   array of contactIDs that the system needs values for.
    * @param int|null $job
    *   the job_id
@@ -71,8 +71,8 @@ class CRM_Stoken_UserTokens {
         return;
       }
       foreach ($cids as $cid) {
-        $values[$cid]['User.first_name'] = $contact['first_name'];
-        $values[$cid]['User.last_name'] = $contact['last_name'];
+        $values[$cid]['User.first_name'] = $contact['first_name'] ?? '';
+        $values[$cid]['User.last_name'] = $contact['last_name'] ?? '';
       }
     }
   }

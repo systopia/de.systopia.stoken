@@ -46,7 +46,7 @@ class CRM_Stoken_DateTokens {
    *
    * @param array<int|string, array<string, mixed>> $values
    *   array of values, keyed by contact id
-   * @param array<int, int|string> $cids
+   * @param array<int|string, int|string> $cids
    *   array of contactIDs that the system needs values for.
    * @param int|null $job
    *   the job_id
@@ -91,9 +91,9 @@ class CRM_Stoken_DateTokens {
       // add French dates
       setlocale(LC_TIME, 'fr_FR.utf8');
       $day = (int) $now->format('j');
-      $day_appendix = $day === 1 ? 'er' : '';
+      $day_appendix = $day === 1 ? "'er'" : '';
       $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-      $formatter->setPattern("'le' d'$day_appendix' MMMM yyyy");
+      $formatter->setPattern("'le' d$day_appendix MMMM yyyy");
       $dates['date.fr_FR_longue'] = $formatter->format($now);
 
       $formatter->setPattern('dd/MM/yyyy');

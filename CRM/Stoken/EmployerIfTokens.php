@@ -44,7 +44,7 @@ class CRM_Stoken_EmployerIfTokens {
    *
    * @param array<int|string, array<string, mixed>> $values
    *   array of values, keyed by contact id
-   * @param array<int, int|string> $cids
+   * @param array<int|string, int|string> $cids
    *   array of contactIDs that the system needs values for.
    * @param int|null $job
    *   the job_id

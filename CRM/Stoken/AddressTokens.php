@@ -36,8 +36,8 @@ class CRM_Stoken_AddressTokens {
 
     // add tokens for other location types
     $location_type_map = self::getLocationTypeMap();
-    $new_tokens = [];
     foreach ($location_type_map as $location_type_id => $section_name) {
+      $new_tokens = [];
 
       // address tokens
       $new_tokens["{$section_name}.{$location_type_id}_street_address"]         = E::ts('Street Name');
@@ -101,7 +101,7 @@ class CRM_Stoken_AddressTokens {
             $address = $location_type_addresses[$contact_id];
             foreach ($token_list as $token) {
               $field = substr($token, strlen((string) $location_type_id) + 1);
-              $values[$contact_id]["{$token_class}.{$token}"] = $address[$field];
+              $values[$contact_id]["{$token_class}.{$token}"] = $address[$field] ?? '';
             }
           }
           else {
@@ -246,6 +246,9 @@ class CRM_Stoken_AddressTokens {
       }
 
       // step 2: load all master contacts and set values in $contactId_2_address
+      if ($contactId_2_masterContactId === []) {
+        return $contactId_2_address;
+      }
       $master_contactquery = civicrm_api3('Contact', 'get', [
         'id'         => ['IN' => array_values($contactId_2_masterContactId)],
         'sequential' => 0,
@@ -256,7 +259,7 @@ class CRM_Stoken_AddressTokens {
         return $contactId_2_address;
       }
       foreach ($contactId_2_masterContactId as $contact_id => $master_contact_id) {
-        $master_contact = $master_contactquery['values'][$master_contact_id];
+        $master_contact = $master_contactquery['values'][$master_contact_id] ?? [];
         $contactId_2_address[$contact_id]['master']   = $master_contact['display_name'] ?? '';
       }
     }

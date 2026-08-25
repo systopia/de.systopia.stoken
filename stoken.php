@@ -42,21 +42,31 @@ function stoken_civicrm_tokens(array &$tokens): void {
  * Hook implementation: New Tokens
  *
  * @param array<int|string, array<string, mixed>> $values
- * @param array<int, int|string> $cids
+ * @param array<int|string, int|string>|string $cids
  * @param array<string, array<int, string>> $tokens
  */
 function stoken_civicrm_tokenValues(
   array &$values,
-  array $cids,
+  array|string $cids,
   ?int $job = NULL,
   array $tokens = [],
   ?string $context = NULL
 ): void {
-  CRM_Stoken_AddressTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_DateTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_EmployerIfTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_FormattingTokens::tokenValues($values, $cids, $job, $tokens, $context);
-  CRM_Stoken_UserTokens::tokenValues($values, $cids, $job, $tokens, $context);
+  if (is_string($cids)) {
+    $contact_ids = explode(',', $cids);
+  }
+  elseif (isset($cids['contact_id'])) {
+    $contact_ids = [$cids['contact_id']];
+  }
+  else {
+    $contact_ids = $cids;
+  }
+
+  CRM_Stoken_AddressTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_DateTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_EmployerIfTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_FormattingTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
+  CRM_Stoken_UserTokens::tokenValues($values, $contact_ids, $job, $tokens, $context);
 }
 
 /**
