@@ -49,9 +49,7 @@
     <rule ref="Generic.NamingConventions.InterfaceNameSuffix"/>
     <rule ref="Generic.NamingConventions.TraitNameSuffix"/>
     <rule ref="Generic.PHP.RequireStrictTypes"/>
-    <rule ref="PSR1.Files.SideEffects">
-        <exclude-pattern>/stoken\.php$</exclude-pattern>
-    </rule>
+    <rule ref="PSR1.Files.SideEffects"/>
     <rule ref="PSR12.Classes.ClassInstantiation"/>
     <rule ref="PSR12.Properties.ConstantVisibility"/>
     <rule ref="Squiz.PHP.CommentedOutCode"/>
