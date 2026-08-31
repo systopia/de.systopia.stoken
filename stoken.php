@@ -17,7 +17,9 @@
 
 declare(strict_types = 1);
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 require_once 'stoken.civix.php';
+// phpcs:enable
 
 use Civi\RemoteToolsDispatcher;
 use CRM_Stoken_ExtensionUtil as E;
